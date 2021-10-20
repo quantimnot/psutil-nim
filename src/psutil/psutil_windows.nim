@@ -18,7 +18,7 @@ const HI_T = 429.4967296
 const
     sysIdlePid* = 0
     sysPid* = 4
-    registryPid* = 88
+    registryPid* = 88 # TODO: I don't know if this always holds true.
     forbiddenPids* = {sysIdlePid, sysPid, registryPid}
 
 # Make some constants for process architecture
@@ -54,11 +54,11 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     ## https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
     if dwProcessId == sysIdlePid:
-        raise newException(ValueError, "System Idle Process (pid 0) can not be opened.")
+        raise newException(ValueError, "System Idle Process (pid " & $sysIdlePid & ") can not be opened.")
     elif dwProcessId == sysPid:
-        raise newException(ValueError, "System (pid 4) can not be opened.")
+        raise newException(ValueError, "System (pid " & $sysPid & ") can not be opened.")
     elif dwProcessId == registryPid:
-        raise newException(ValueError, "Registry (pid 88) can not be opened.")
+        raise newException(ValueError, "Registry (pid " & $registryPid & ") can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result == 0:
         echo $dwProcessId
@@ -181,6 +181,8 @@ proc pid_names*(pids: seq[int]): seq[string] =
             ret.add("System Idle Process")
         elif pid == sysPid:
             ret.add("System")
+        elif pid == registryPid:
+            ret.add("Registry")
         else:
             ret.add(pid_name(pid))
 
