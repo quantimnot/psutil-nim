@@ -306,6 +306,10 @@ export
     net_connections
 
 when defined(linux):
-    export pid_user
+    export
+        pid_user,
+        pids_with_names
 elif defined(windows):
-    export getnativearch
+    export
+        getnativearch,
+        pids_with_names
