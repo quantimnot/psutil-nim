@@ -15,6 +15,8 @@ var AF_PACKET* = -1
 const LO_T = 1e-7
 const HI_T = 429.4967296
 
+const SYS_IDLE_PID = 0
+
 # Make some constants for process architecture
 const PROCESS_ARCH_UNKNOWN* = 0 # architecture is unknown
 const PROCESS_ARCH_X86* = 1     # architecture is 32 bit
@@ -181,6 +183,8 @@ proc pid_names*(pids: seq[int]): seq[string] =
     return ret
 
 proc pid_path*(pid: int): string =
+    if pid == SYS_IDLE_PID:
+      raise newException(ValueError, "The System Idle Process (pid 0) can not be opened.")
     var processHandle: HANDLE
     var filename: wstring
     var dwSize = MAX_PATH
