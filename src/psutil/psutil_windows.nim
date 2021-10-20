@@ -178,7 +178,10 @@ proc pid_names*(pids: seq[int]): seq[string] =
     ]#
     var ret: seq[string]
     for pid in pids:
-        ret.add(pid_name(pid))
+        if pid == sysIdlePid:
+            ret.add("System Idle")
+        else:
+            ret.add(pid_name(pid))
 
     return ret
 
