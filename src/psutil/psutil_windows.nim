@@ -197,7 +197,7 @@ proc pid_path*(pid: int): string =
     var processHandle: HANDLE
     var filename: wstring
     var dwSize = MAX_PATH
-    processHandle = openProc(pid, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
+    processHandle = openProc(pid)
     defer: CloseHandle(processHandle)
     if processHandle == cast[HANDLE](1) or processHandle == cast[HANDLE](NULL):
         if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
