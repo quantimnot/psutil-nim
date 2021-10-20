@@ -146,66 +146,62 @@ proc pids*(): seq[int] =
 
 proc pid_name*(processID: int): string =
     ## Function for getting the process name of pid
-    var szProcessName: wstring #array[MAX_PATH, TCHAR]
+    case processID
+    of sysIdlePid:
+        result = "System Idle Process"
+    of sysPid:
+        result = "System"
+    of registryPid:
+        result = "Registry"
+    else:
+        var szProcessName: wstring #array[MAX_PATH, TCHAR]
 
-    #  Get a handle to the process.
-    var hProcess = openProc(processID, PROCESS_QUERY_LIMITED_INFORMATION)
+        #  Get a handle to the process.
+        var hProcess = openProc(processID)
 
-    #  Get the process name.
-    var hMod: HMODULE
-    var cbNeeded: DWORD
+        #  Get the process name.
+        var hMod: HMODULE
+        var cbNeeded: DWORD
 
-    if EnumProcessModules( hProcess, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
+        if EnumProcessModules( hProcess, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
 
-        GetModuleBaseName( hProcess, hMod, szProcessName,
-                            cast[DWORD](szProcessName.len) )
+            GetModuleBaseName( hProcess, hMod, szProcessName,
+                                cast[DWORD](szProcessName.len) )
 
-    # Release the handle to the process.
-    CloseHandle( hProcess )
+        # Release the handle to the process.
+        CloseHandle( hProcess )
 
-    # return the process name
-    var ret: string
-    for c in szProcessName:
-        if cast[char](c) == '\0':
-            break
-
-        ret.add(cast[char](c))
-
-    return ret
+        # return the process name
+        for c in szProcessName:
+            if cast[char](c) == '\0':
+                break
+            result.add(cast[char](c))
 
 proc pid_names*(pids: seq[int]): seq[string] =
     ## Function for getting the process name of pid
-    var ret: seq[string]
     for pid in pids:
-        if pid == sysIdlePid:
-            ret.add("System Idle Process")
-        elif pid == sysPid:
-            ret.add("System")
-        elif pid == registryPid:
-            ret.add("Registry")
-        else:
-            ret.add(pid_name(pid))
-
-    return ret
+        result.add(pid_name(pid))
 
 proc pid_path*(pid: int): string =
-    var processHandle: HANDLE
-    var filename: wstring
-    var dwSize = MAX_PATH
-    processHandle = openProc(pid)
-    defer: CloseHandle(processHandle)
-    if processHandle == cast[HANDLE](1) or processHandle == cast[HANDLE](NULL):
-        if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
-            raiseError()
-        else:
-            var ret: string
-            for c in filename:
-                if cast[char](c) == '\0':
-                    break
-                ret.add(cast[char](c))
-            return ret
+    case pid
+    of forbiddenPids:
+        result = ""
     else:
-        raiseError()
+        var processHandle: HANDLE
+        var filename: wstring
+        var dwSize = MAX_PATH
+        processHandle = openProc(pid)
+        defer: CloseHandle(processHandle)
+        if processHandle == cast[HANDLE](1) or processHandle == cast[HANDLE](NULL):
+            if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
+                raiseError()
+            else:
+                for c in filename:
+                    if cast[char](c) == '\0':
+                        break
+                    result.add(cast[char](c))
+        else:
+            raiseError()
 
 proc pid_paths*(pids: seq[int]): seq[string] =
     var ret: seq[string]
@@ -218,7 +214,7 @@ proc try_pid_path*(pid: int): string =
     var filename: wstring
     var dwSize = MAX_PATH
 
-    processHandle = openProc(pid, PROCESS_QUERY_LIMITED_INFORMATION or PROCESS_VM_READ)
+    processHandle = openProc(pid)
     defer: CloseHandle(processHandle)
 
     if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
@@ -284,7 +280,6 @@ proc pid_arch*(pid: int) : int =
 
     hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
-    hProcess = openProc(dwPid, PROCESS_QUERY_LIMITED_INFORMATION)
 
     if IsWow64Process(hProcess, bIsWow64.addr) == FALSE:
         return
