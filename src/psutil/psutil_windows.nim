@@ -191,16 +191,13 @@ proc pid_path*(pid: int): string =
         var dwSize = MAX_PATH
         processHandle = openProc(pid)
         defer: CloseHandle(processHandle)
-        if processHandle == cast[HANDLE](1) or processHandle == cast[HANDLE](NULL):
-            if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
-                raiseError()
-            else:
-                for c in filename:
-                    if cast[char](c) == '\0':
-                        break
-                    result.add(cast[char](c))
-        else:
+        if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
             raiseError()
+        else:
+            for c in filename:
+                if cast[char](c) == '\0':
+                    break
+                result.add(cast[char](c))
 
 proc pid_paths*(pids: seq[int]): seq[string] =
     var ret: seq[string]
