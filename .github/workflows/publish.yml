@@ -22,8 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 1
-          ref: master
+          fetch-depth: 0
           token: ${{secrets.GH_PAGES_TOKEN}}
       - name: Deploy GitHub Docs ${{matrix.os}}
         if: runner.os != 'Windows'
@@ -35,8 +34,9 @@ jobs:
           nimble docs
           git config --global user.name "${{github.actor}}"
           git config --global user.email "${{github.actor}}@users.noreply.github.com"
-          git fetch
           git checkout gh-pages
+          rm -rf docs
+          mv htmldocs docs
           git add -A
           git commit -m "gh pages"
           git push --set-upstream origin/gh-pages
@@ -51,8 +51,9 @@ jobs:
           nimble docs
           git config --global user.name "${{github.actor}}"
           git config --global user.email "${{github.actor}}@users.noreply.github.com"
-          git fetch
           git checkout gh-pages
+          rm -rf docs
+          mv htmldocs docs
           git add -A
           git commit -m "gh pages"
           git push --set-upstream origin/gh-pages
