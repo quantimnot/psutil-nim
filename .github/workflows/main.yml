@@ -33,6 +33,6 @@ jobs:
         echo n | ./choosenim.exe ${{ matrix.nim }}
         export PATH="${HOME}/.nimble/bin:${PATH}"
         echo y | nimble install
-        tasklist '/V'
+        tasklist '\/v'
         nimble --nim:"${HOME}/.nimble/bin/nim.exe" test
 
