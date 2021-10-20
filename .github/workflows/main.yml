@@ -32,5 +32,6 @@ jobs:
         curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
         echo n | ./choosenim.exe ${{ matrix.nim }}
         export PATH="${HOME}/.nimble/bin:${PATH}"
+        nimble install
         nimble --nim:"${HOME}/.nimble/bin/nim.exe" test
 
