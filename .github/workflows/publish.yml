@@ -1,0 +1,89 @@
+name: publish
+
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  gh-pages-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{secrets.GH_PAGES_TOKEN}}
+      - name: Deploy GitHub Docs
+        run: |
+          curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+          sh choosenim.sh -y
+          export PATH="${HOME}/.nimble/bin:${PATH}"
+          choosenim stable
+          nimble docs
+          git config --global user.name "${{github.actor}}"
+          git config --global user.email "${{github.actor}}@users.noreply.github.com"
+          git checkout gh-pages
+          rm -rf docs/macos
+          mv htmldocs/macos docs
+          rm -rf htmldocs
+          git add docs
+          git commit -m "macos gh pages"
+          git pull
+          git push
+
+  gh-pages-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{secrets.GH_PAGES_TOKEN}}
+      - name: Deploy GitHub Docs
+        shell: bash
+        run: |
+          curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
+          echo n | ./choosenim.exe stable
+          export PATH="${HOME}/.nimble/bin:${PATH}"
+          echo y | nimble install
+          nimble docs
+          git config --global user.name "${{github.actor}}"
+          git config --global user.email "${{github.actor}}@users.noreply.github.com"
+          rm -rf docs/{index.html,nimdoc.out.css}
+          git checkout gh-pages
+          rm -rf docs/windows
+          mv htmldocs/windows docs
+          rm -rf htmldocs
+          git add docs
+          git commit -m "windows gh pages"
+          git pull
+          git push
+
+  gh-pages-linux:
+    runs-on: ubuntu-latest
+    needs: [gh-pages-macos, gh-pages-windows]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{secrets.GH_PAGES_TOKEN}}
+      - name: Deploy GitHub Docs
+        run: |
+          curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+          sh choosenim.sh -y
+          export PATH="${HOME}/.nimble/bin:${PATH}"
+          choosenim stable
+          nimble docs
+          git config --global user.name "${{github.actor}}"
+          git config --global user.email "${{github.actor}}@users.noreply.github.com"
+          git checkout gh-pages
+          rm -rf docs/{linux,posix}
+          mv htmldocs/{linux,posix,*.*} docs
+          rm -rf htmldocs
+          git add docs
+          git commit -m "linux and posix gh pages"
+          git pull
+          git push
