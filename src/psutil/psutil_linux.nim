@@ -1,12 +1,17 @@
 {.deadCodeElim: on.}
+
+#[
+Linux To Do -
+    cpu_times_percent(interval=None, percpu=False)
+    process_iter()
+    wait_procs(procs, timeout=None, callback=None)
+]#
+
 import algorithm, math, net, os, posix, sequtils, sets, strutils, tables, times
 import strformat
 import common, psutil_posix
 
-
-################################################################################
 const PROCFS_PATH = "/proc"
-
 const UT_LINESIZE = 32
 const UT_NAMESIZE = 32
 const UT_HOSTSIZE = 256

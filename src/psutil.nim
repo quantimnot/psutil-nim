@@ -1,9 +1,3 @@
-##[
-Linux To Do -
-    cpu_times_percent(interval=None, percpu=False)
-    process_iter()
-    wait_procs(procs, timeout=None, callback=None)
-]##
 import
     math,
     os,
