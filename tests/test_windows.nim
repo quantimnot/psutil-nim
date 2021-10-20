@@ -8,7 +8,7 @@ echo fmt"{getnativearch()}"
 # echo_proc pid_exists(77724)
 echo_proc pids_with_names()
 for pid in pids():
-  if not pid == sysIdlePid:
+  if not pid in forbiddenPids:
     echo pid_path(pid)
     echo fmt"{pid_arch(pid)}"
     echo fmt"{pid_user(pid)}"
