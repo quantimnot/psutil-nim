@@ -39,7 +39,7 @@ jobs:
           mv htmldocs docs
           git add -A
           git commit -m "gh pages"
-          git push --set-upstream origin/gh-pages
+          git push
       - name: Deploy GitHub Docs Windows
         if: runner.os == 'Windows'
         shell: bash
@@ -56,4 +56,4 @@ jobs:
           mv htmldocs docs
           git add -A
           git commit -m "gh pages"
-          git push --set-upstream origin/gh-pages
+          git push
