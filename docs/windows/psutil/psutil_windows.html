@@ -240,8 +240,8 @@ window.addEventListener('DOMContentLoaded', main);
 
   </ul>
   <ul class="simple nested-toc-section">pid_names
-      <li><a class="reference" href="#pid_names%2Cseq%5Bint%5D"
-    title="pid_names(pids: seq[int]): seq[string]">pid_names(pids: seq[int]): seq[string]</a></li>
+      <li><a class="reference" href="#pid_names%2CopenArray%5Bint%5D"
+    title="pid_names(pids: openArray[int]): seq[string]">pid_names(pids: openArray[int]): seq[string]</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">pid_parent
@@ -301,6 +301,16 @@ window.addEventListener('DOMContentLoaded', main);
     title="swap_memory(): SwapMemory">swap_memory(): SwapMemory</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">try_pid_name
+      <li><a class="reference" href="#try_pid_name%2Cint"
+    title="try_pid_name(pid: int): Option[string]">try_pid_name(pid: int): Option[string]</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">try_pid_names
+      <li><a class="reference" href="#try_pid_names%2CopenArray%5Bint%5D"
+    title="try_pid_names(pids: openArray[int]): seq[Option[string]]">try_pid_names(pids: openArray[int]): seq[Option[string]]</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">try_pid_path
       <li><a class="reference" href="#try_pid_path%2Cint"
     title="try_pid_path(pid: int): Option[string]">try_pid_path(pid: int): Option[string]</a></li>
@@ -319,6 +329,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">try_pid_users
       <li><a class="reference" href="#try_pid_users%2CopenArray%5Bint%5D"
     title="try_pid_users(pids: openArray[int]): seq[Option[string]]">try_pid_users(pids: openArray[int]): seq[Option[string]]</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">try_pids_with_names
+      <li><a class="reference" href="#try_pids_with_names"
+    title="try_pids_with_names(): (seq[int], seq[Option[string]])">try_pids_with_names(): (seq[int], seq[Option[string]])</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">uptime
@@ -349,7 +364,7 @@ window.addEventListener('DOMContentLoaded', main);
   
   <p class="module-desc"><dl class="docutils"><dt>TODO:</dt>
 <dd><ul class="simple"><li>Consider using <a class="reference external" href="https://docs.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation">NtQuerySystemInformation</a> to get more detailed proc info for previleged procs.</li>
-<li>Consider a module that uses <a class="reference internal" href="#https">https</a>. Would need to be GPL.</li>
+<li>Consider a module that uses <a class="reference external" href="https://github.com/processhacker/processhacker">processhacker</a>. Would need to be GPL.</li>
 </ul>
 </dd>
 </dl>
@@ -603,9 +618,9 @@ Return process name of pid. Throws OSError whenever <tt class="docutils literal"
 
 </dd>
 </div>
-<div id="pid_names,seq[int]">
-<dt><pre><span class="Keyword">proc</span> <a href="#pid_names%2Cseq%5Bint%5D"><span class="Identifier">pid_names</span></a><span class="Other">(</span><span class="Identifier">pids</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<div id="pid_names,openArray[int]">
+<dt><pre><span class="Keyword">proc</span> <a href="#pid_names%2CopenArray%5Bint%5D"><span class="Identifier">pid_names</span></a><span class="Other">(</span><span class="Identifier">pids</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Function for getting the process name of pid
@@ -711,6 +726,23 @@ Swap system memory as a (total, used, free, sin, sout)
 
 </dd>
 </div>
+<div id="try_pid_name,int">
+<dt><pre><span class="Keyword">proc</span> <a href="#try_pid_name%2Cint"><span class="Identifier">try_pid_name</span></a><span class="Other">(</span><span class="Identifier">pid</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Return process name of pid.
+
+</dd>
+</div>
+<div id="try_pid_names,openArray[int]">
+<dt><pre><span class="Keyword">proc</span> <a href="#try_pid_names%2CopenArray%5Bint%5D"><span class="Identifier">try_pid_names</span></a><span class="Other">(</span><span class="Identifier">pids</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Function for getting the process name of pid
+
+</dd>
+</div>
 <div id="try_pid_path,int">
 <dt><pre><span class="Keyword">proc</span> <a href="#try_pid_path%2Cint"><span class="Identifier">try_pid_path</span></a><span class="Other">(</span><span class="Identifier">pid</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -742,6 +774,15 @@ Attempt to get the username associated with the given pid.
 <dd>
 
 Function for getting users of specified pids
+
+</dd>
+</div>
+<div id="try_pids_with_names">
+<dt><pre><span class="Keyword">proc</span> <a href="#try_pids_with_names"><span class="Identifier">try_pids_with_names</span></a><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Other">(</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">Option</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Function for returning tuple of pids and names
 
 </dd>
 </div>
@@ -779,7 +820,7 @@ System virtual memory
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2021-10-20 21:53:50 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2021-10-20 22:12:42 UTC</small>
       </div>
     </div>
   </div>
