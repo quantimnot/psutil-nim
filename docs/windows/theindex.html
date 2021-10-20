@@ -223,7 +223,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="pid_names" href="#pid_names"><span>pid_names:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: pid_names(pids: seq[int]): seq[string]" href="psutil/psutil_windows.html#pid_names%2Cseq%5Bint%5D">psutil_windows: pid_names(pids: seq[int]): seq[string]</a></li>
+          data-doc-search-tag="psutil_windows: pid_names(pids: openArray[int]): seq[string]" href="psutil/psutil_windows.html#pid_names%2CopenArray%5Bint%5D">psutil_windows: pid_names(pids: openArray[int]): seq[string]</a></li>
           </ul></dd>
 <dt><a name="pid_parent" href="#pid_parent"><span>pid_parent:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -299,6 +299,14 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="psutil_windows: SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION" href="psutil/psutil_windows.html#SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION">psutil_windows: SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION</a></li>
           </ul></dd>
+<dt><a name="try_pid_name" href="#try_pid_name"><span>try_pid_name:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="psutil_windows: try_pid_name(pid: int): Option[string]" href="psutil/psutil_windows.html#try_pid_name%2Cint">psutil_windows: try_pid_name(pid: int): Option[string]</a></li>
+          </ul></dd>
+<dt><a name="try_pid_names" href="#try_pid_names"><span>try_pid_names:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="psutil_windows: try_pid_names(pids: openArray[int]): seq[Option[string]]" href="psutil/psutil_windows.html#try_pid_names%2CopenArray%5Bint%5D">psutil_windows: try_pid_names(pids: openArray[int]): seq[Option[string]]</a></li>
+          </ul></dd>
 <dt><a name="try_pid_path" href="#try_pid_path"><span>try_pid_path:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="psutil_windows: try_pid_path(pid: int): Option[string]" href="psutil/psutil_windows.html#try_pid_path%2Cint">psutil_windows: try_pid_path(pid: int): Option[string]</a></li>
@@ -306,6 +314,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="try_pid_paths" href="#try_pid_paths"><span>try_pid_paths:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="psutil_windows: try_pid_paths(pids: openArray[int]): seq[Option[string]]" href="psutil/psutil_windows.html#try_pid_paths%2CopenArray%5Bint%5D">psutil_windows: try_pid_paths(pids: openArray[int]): seq[Option[string]]</a></li>
+          </ul></dd>
+<dt><a name="try_pids_with_names" href="#try_pids_with_names"><span>try_pids_with_names:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="psutil_windows: try_pids_with_names(): (seq[int], seq[Option[string]])" href="psutil/psutil_windows.html#try_pids_with_names">psutil_windows: try_pids_with_names(): (seq[int], seq[Option[string]])</a></li>
           </ul></dd>
 <dt><a name="try_pid_user" href="#try_pid_user"><span>try_pid_user:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -348,7 +360,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2021-10-20 21:53:50 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2021-10-20 22:12:42 UTC</small>
       </div>
     </div>
   </div>

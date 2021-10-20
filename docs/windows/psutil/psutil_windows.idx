@@ -9,15 +9,18 @@ psutil_get_drive_type	psutil/psutil_windows.html#psutil_get_drive_type,UINT	psut
 psutil_get_drive_type	psutil/psutil_windows.html#psutil_get_drive_type,string	psutil_windows: psutil_get_drive_type(drive: string): string	
 getnativearch	psutil/psutil_windows.html#getnativearch	psutil_windows: getnativearch(): int	
 pids	psutil/psutil_windows.html#pids	psutil_windows: pids(): seq[int]	
+try_pid_name	psutil/psutil_windows.html#try_pid_name,int	psutil_windows: try_pid_name(pid: int): Option[string]	
 pid_name	psutil/psutil_windows.html#pid_name,int	psutil_windows: pid_name(pid: int): string	
-pid_names	psutil/psutil_windows.html#pid_names,seq[int]	psutil_windows: pid_names(pids: seq[int]): seq[string]	
-pid_path	psutil/psutil_windows.html#pid_path,int	psutil_windows: pid_path(pid: int): string	
-pid_paths	psutil/psutil_windows.html#pid_paths,openArray[int]	psutil_windows: pid_paths(pids: openArray[int]): seq[string]	
+try_pid_names	psutil/psutil_windows.html#try_pid_names,openArray[int]	psutil_windows: try_pid_names(pids: openArray[int]): seq[Option[string]]	
+pid_names	psutil/psutil_windows.html#pid_names,openArray[int]	psutil_windows: pid_names(pids: openArray[int]): seq[string]	
 try_pid_path	psutil/psutil_windows.html#try_pid_path,int	psutil_windows: try_pid_path(pid: int): Option[string]	
 try_pid_paths	psutil/psutil_windows.html#try_pid_paths,openArray[int]	psutil_windows: try_pid_paths(pids: openArray[int]): seq[Option[string]]	
+pid_path	psutil/psutil_windows.html#pid_path,int	psutil_windows: pid_path(pid: int): string	
+pid_paths	psutil/psutil_windows.html#pid_paths,openArray[int]	psutil_windows: pid_paths(pids: openArray[int]): seq[string]	
 pid_parent	psutil/psutil_windows.html#pid_parent,int	psutil_windows: pid_parent(pid: int): int	
 pid_parents	psutil/psutil_windows.html#pid_parents,openArray[int]	psutil_windows: pid_parents(pids: openArray[int]): seq[int]	
 pids_with_names	psutil/psutil_windows.html#pids_with_names	psutil_windows: pids_with_names(): (seq[int], seq[string])	
+try_pids_with_names	psutil/psutil_windows.html#try_pids_with_names	psutil_windows: try_pids_with_names(): (seq[int], seq[Option[string]])	
 pid_arch	psutil/psutil_windows.html#pid_arch,int	psutil_windows: pid_arch(pid: int): int	
 pid_user	psutil/psutil_windows.html#pid_user,int	psutil_windows: pid_user(pid: int): string	
 pid_users	psutil/psutil_windows.html#pid_users,openArray[int]	psutil_windows: pid_users(pids: openArray[int]): seq[string]	
