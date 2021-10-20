@@ -29,8 +29,7 @@ jobs:
           git checkout gh-pages
           rm -rf docs/macos
           mv htmldocs/macos docs
-          rm -rf htmldocs
-          git add -A
+          git add docs
           git commit -m "macos gh pages"
           git pull
           git push
@@ -56,8 +55,7 @@ jobs:
           git checkout gh-pages
           rm -rf docs/windows
           mv htmldocs/windows docs
-          rm -rf htmldocs
-          git add -A
+          git add docs
           git commit -m "windows gh pages"
           git pull
           git push
@@ -82,8 +80,7 @@ jobs:
           git checkout gh-pages
           rm -rf docs/{linux,posix}
           mv htmldocs/{linux,posix,*.*} docs
-          rm -rf htmldocs
-          git add -A
+          git add docs
           git commit -m "linux and posix gh pages"
           git pull
           git push
