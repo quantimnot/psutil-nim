@@ -1,0 +1,49 @@
+AF_PACKET	psutil/psutil_windows.html#AF_PACKET	psutil_windows: AF_PACKET	
+sysIdlePid	psutil/psutil_windows.html#sysIdlePid	psutil_windows: sysIdlePid	
+sysPid	psutil/psutil_windows.html#sysPid	psutil_windows: sysPid	
+registryPid	psutil/psutil_windows.html#registryPid	psutil_windows: registryPid	
+forbiddenPids	psutil/psutil_windows.html#forbiddenPids	psutil_windows: forbiddenPids	
+PROCESS_ARCH_UNKNOWN	psutil/psutil_windows.html#PROCESS_ARCH_UNKNOWN	psutil_windows: PROCESS_ARCH_UNKNOWN	
+PROCESS_ARCH_X86	psutil/psutil_windows.html#PROCESS_ARCH_X86	psutil_windows: PROCESS_ARCH_X86	
+PROCESS_ARCH_X64	psutil/psutil_windows.html#PROCESS_ARCH_X64	psutil_windows: PROCESS_ARCH_X64	
+SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION	psutil/psutil_windows.html#SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION	psutil_windows: SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION	
+psutil_get_drive_type	psutil/psutil_windows.html#psutil_get_drive_type,UINT	psutil_windows: psutil_get_drive_type(drive_type: UINT): string	
+psutil_get_drive_type	psutil/psutil_windows.html#psutil_get_drive_type,string	psutil_windows: psutil_get_drive_type(drive: string): string	
+getnativearch	psutil/psutil_windows.html#getnativearch	psutil_windows: getnativearch(): int	
+pids	psutil/psutil_windows.html#pids	psutil_windows: pids(): seq[int]	
+pid_name	psutil/psutil_windows.html#pid_name,int	psutil_windows: pid_name(processID: int): string	
+pid_names	psutil/psutil_windows.html#pid_names,seq[int]	psutil_windows: pid_names(pids: seq[int]): seq[string]	
+pid_path	psutil/psutil_windows.html#pid_path,int	psutil_windows: pid_path(pid: int): string	
+pid_paths	psutil/psutil_windows.html#pid_paths,seq[int]	psutil_windows: pid_paths(pids: seq[int]): seq[string]	
+try_pid_path	psutil/psutil_windows.html#try_pid_path,int	psutil_windows: try_pid_path(pid: int): string	
+try_pid_paths	psutil/psutil_windows.html#try_pid_paths,seq[int]	psutil_windows: try_pid_paths(pids: seq[int]): seq[string]	
+pid_parent	psutil/psutil_windows.html#pid_parent,int	psutil_windows: pid_parent(pid: int): int	
+pid_parents	psutil/psutil_windows.html#pid_parents,seq[int]	psutil_windows: pid_parents(pids: seq[int]): seq[int]	
+pids_with_names	psutil/psutil_windows.html#pids_with_names	psutil_windows: pids_with_names(): (seq[int], seq[string])	
+pid_arch	psutil/psutil_windows.html#pid_arch,int	psutil_windows: pid_arch(pid: int): int	
+pid_user	psutil/psutil_windows.html#pid_user,int	psutil_windows: pid_user(pid: int): string	
+pid_users	psutil/psutil_windows.html#pid_users,seq[int]	psutil_windows: pid_users(pids: seq[int]): seq[string]	
+try_pid_user	psutil/psutil_windows.html#try_pid_user,int	psutil_windows: try_pid_user(pid: int): string	
+try_pid_users	psutil/psutil_windows.html#try_pid_users,seq[int]	psutil_windows: try_pid_users(pids: seq[int]): seq[string]	
+pid_domain	psutil/psutil_windows.html#pid_domain,int	psutil_windows: pid_domain(pid: int): string	
+pid_domain_user	psutil/psutil_windows.html#pid_domain_user,int	psutil_windows: pid_domain_user(pid: int): (string, string)	
+disk_partitions	psutil/psutil_windows.html#disk_partitions	psutil_windows: disk_partitions(all = false): seq[DiskPartition]	
+disk_usage	psutil/psutil_windows.html#disk_usage,string	psutil_windows: disk_usage(path: string): DiskUsage	
+virtual_memory	psutil/psutil_windows.html#virtual_memory	psutil_windows: virtual_memory(): VirtualMemory	
+swap_memory	psutil/psutil_windows.html#swap_memory	psutil_windows: swap_memory(): SwapMemory	
+boot_time	psutil/psutil_windows.html#boot_time	psutil_windows: boot_time(): float	
+uptime	psutil/psutil_windows.html#uptime	psutil_windows: uptime(): int	
+per_cpu_times	psutil/psutil_windows.html#per_cpu_times	psutil_windows: per_cpu_times(): seq[CPUTimes]	
+cpu_times	psutil/psutil_windows.html#cpu_times	psutil_windows: cpu_times(): CPUTimes	
+cpu_count_logical	psutil/psutil_windows.html#cpu_count_logical	psutil_windows: cpu_count_logical(): int	
+cpu_count_physical	psutil/psutil_windows.html#cpu_count_physical	psutil_windows: cpu_count_physical(): int	
+users	psutil/psutil_windows.html#users	psutil_windows: users(): seq[User]	
+cpu_stats	psutil/psutil_windows.html#cpu_stats	psutil_windows: cpu_stats(): tuple[ctx_switches, interrupts, soft_interrupts, syscalls: int]	
+net_connections	psutil/psutil_windows.html#net_connections,string,int	psutil_windows: net_connections(kind = &quot;inet&quot;; pid = -1): seq[Connection]	
+net_if_addrs	psutil/psutil_windows.html#net_if_addrs	psutil_windows: net_if_addrs(): Table[string, seq[common.Address]]	
+net_if_stats	psutil/psutil_windows.html#net_if_stats	psutil_windows: net_if_stats(): TableRef[string, NICStats]	
+per_disk_io_counters	psutil/psutil_windows.html#per_disk_io_counters	psutil_windows: per_disk_io_counters(): TableRef[string, DiskIO]	
+per_nic_net_io_counters	psutil/psutil_windows.html#per_nic_net_io_counters	psutil_windows: per_nic_net_io_counters(): TableRef[string, NetIO]	
+process_exists	psutil/psutil_windows.html#process_exists,string	psutil_windows: process_exists(processName: string): bool	
+pid_exists	psutil/psutil_windows.html#pid_exists,int	psutil_windows: pid_exists(pid: int): bool	
+pid_cmdline	psutil/psutil_windows.html#pid_cmdline,int	psutil_windows: pid_cmdline(pid: int): string	
