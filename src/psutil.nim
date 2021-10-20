@@ -311,6 +311,7 @@ when defined(linux):
         pids_with_names
 elif defined(windows):
     export
+        sysIdlePid,
         getnativearch,
         pids_with_names,
         pid_arch,

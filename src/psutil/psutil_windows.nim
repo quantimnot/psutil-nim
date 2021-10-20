@@ -15,7 +15,7 @@ var AF_PACKET* = -1
 const LO_T = 1e-7
 const HI_T = 429.4967296
 
-const SYS_IDLE_PID = 0
+const sysIdlePid* = 0
 
 # Make some constants for process architecture
 const PROCESS_ARCH_UNKNOWN* = 0 # architecture is unknown
@@ -48,7 +48,7 @@ proc raiseError() =
 
 proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_INFORMATION, bInheritHandle: WINBOOL = FALSE): HANDLE =
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
-    if dwProcessId == SYS_IDLE_PID:
+    if dwProcessId == sysIdlePid:
         raise newException(ValueError, "The System Idle Process (pid 0) can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result == 0:

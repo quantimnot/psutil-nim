@@ -2,17 +2,18 @@ import ../src/psutil
 import strformat
 template echo_proc(x: untyped) =
   echo "\n\n", astToStr(x), "\n", x
-    
+
 
 echo fmt"{getnativearch()}"
 # echo_proc pid_exists(77724)
 echo_proc pids_with_names()
 for pid in pids():
-  echo pid_path(pid)
-  echo fmt"{pid_arch(pid)}"
-  echo fmt"{pid_user(pid)}"
-  echo fmt"{pid_domain(pid)}"
-  echo fmt"{pid_domain_user(pid)}"
+  if not pid == sysIdlePid:
+    echo pid_path(pid)
+    echo fmt"{pid_arch(pid)}"
+    echo fmt"{pid_user(pid)}"
+    echo fmt"{pid_domain(pid)}"
+    echo fmt"{pid_domain_user(pid)}"
 
 var du = disk_usage("C:\\")
 echo du.total
