@@ -20,7 +20,7 @@ jobs:
         curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
         sh choosenim.sh -y
         export PATH="${HOME}/.nimble/bin:${PATH}"
-        choosenim ${{matrix.nim}}
+        choosenim stable
         nim docs --project --index:on --outdir:.
         git add -A
         git commit -m "gh pages"
