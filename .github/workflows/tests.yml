@@ -48,9 +48,9 @@ jobs:
           - macOS-11
           - windows-2016
           - windows-2022
-        testsuite:
-          - test_all
-          - test_regression
+        test:
+          - all
+          - regression
     steps:
     - uses: actions/checkout@v2
       with:
@@ -63,7 +63,7 @@ jobs:
         echo "PATH=${HOME}/.nimble/bin:${PATH}" >> "${GITHUB_ENV}"
         export PATH="${HOME}/.nimble/bin:${PATH}"
         choosenim stable
-        nimble ${{matrix.testsuite}}
+        nimble test_${{matrix.test}}
         nimble docs
     - name: Test ${{matrix.os}}
       if: runner.os == 'Windows'
@@ -74,5 +74,5 @@ jobs:
         export PATH="${HOME}/.nimble/bin:${PATH}"
         echo y | nimble install
         tasklist
-        nimble --nim:"${HOME}/.nimble/bin/nim.exe" ${{matrix.testsuite}}
+        nimble --nim:"${HOME}/.nimble/bin/nim.exe" test_${{matrix.test}}
         nimble docs
