@@ -1,0 +1,18 @@
+PROC_PIDLISTFDS	psutil/arch/osx/process_info.html#PROC_PIDLISTFDS	process_info: PROC_PIDLISTFDS	
+PROC_PIDLISTFD_SIZE	psutil/arch/osx/process_info.html#PROC_PIDLISTFD_SIZE	process_info: PROC_PIDLISTFD_SIZE	
+PROX_FDTYPE_ATALK	psutil/arch/osx/process_info.html#PROX_FDTYPE_ATALK	process_info: PROX_FDTYPE_ATALK	
+PROX_FDTYPE_VNODE	psutil/arch/osx/process_info.html#PROX_FDTYPE_VNODE	process_info: PROX_FDTYPE_VNODE	
+PROX_FDTYPE_SOCKET	psutil/arch/osx/process_info.html#PROX_FDTYPE_SOCKET	process_info: PROX_FDTYPE_SOCKET	
+PROX_FDTYPE_PSHM	psutil/arch/osx/process_info.html#PROX_FDTYPE_PSHM	process_info: PROX_FDTYPE_PSHM	
+PROX_FDTYPE_PSEM	psutil/arch/osx/process_info.html#PROX_FDTYPE_PSEM	process_info: PROX_FDTYPE_PSEM	
+PROX_FDTYPE_KQUEUE	psutil/arch/osx/process_info.html#PROX_FDTYPE_KQUEUE	process_info: PROX_FDTYPE_KQUEUE	
+PROX_FDTYPE_PIPE	psutil/arch/osx/process_info.html#PROX_FDTYPE_PIPE	process_info: PROX_FDTYPE_PIPE	
+PROX_FDTYPE_FSEVENTS	psutil/arch/osx/process_info.html#PROX_FDTYPE_FSEVENTS	process_info: PROX_FDTYPE_FSEVENTS	
+PROC_PIDFDVNODEPATHINFO	psutil/arch/osx/process_info.html#PROC_PIDFDVNODEPATHINFO	process_info: PROC_PIDFDVNODEPATHINFO	
+PROC_PIDFDSOCKETINFO	psutil/arch/osx/process_info.html#PROC_PIDFDSOCKETINFO	process_info: PROC_PIDFDSOCKETINFO	
+proc_fdinfo	psutil/arch/osx/process_info.html#proc_fdinfo	process_info: proc_fdinfo	
+vnode_fdinfowithpath	psutil/arch/osx/process_info.html#vnode_fdinfowithpath	process_info: vnode_fdinfowithpath	
+proc_fileinfo	psutil/arch/osx/process_info.html#proc_fileinfo	process_info: proc_fileinfo	
+socket_fdinfo	psutil/arch/osx/process_info.html#socket_fdinfo	process_info: socket_fdinfo	
+proc_pidinfo	psutil/arch/osx/process_info.html#proc_pidinfo,cint,cint,uint64,pointer,cint	process_info: proc_pidinfo(pid: cint; flavor: cint; arg: uint64; buffer: pointer;\n             buffer_size: cint): cint	
+proc_pidfdinfo	psutil/arch/osx/process_info.html#proc_pidfdinfo,cint,cint,cint,pointer,cint	process_info: proc_pidfdinfo(pid: cint; flavor: cint; fd: cint; buffer: pointer;\n               buffer_size: cint): cint	

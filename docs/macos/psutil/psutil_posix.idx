@@ -1,0 +1,19 @@
+IFHWADDRLEN	psutil/psutil_posix.html#IFHWADDRLEN	psutil_posix: IFHWADDRLEN	
+IF_NAMESIZE	psutil/psutil_posix.html#IF_NAMESIZE	psutil_posix: IF_NAMESIZE	
+IFNAMSIZ	psutil/psutil_posix.html#IFNAMSIZ	psutil_posix: IFNAMSIZ	
+IFF_BROADCAST	psutil/psutil_posix.html#IFF_BROADCAST	psutil_posix: IFF_BROADCAST	
+IFF_POINTOPOINT	psutil/psutil_posix.html#IFF_POINTOPOINT	psutil_posix: IFF_POINTOPOINT	
+NI_MAXHOST	psutil/psutil_posix.html#NI_MAXHOST	psutil_posix: NI_MAXHOST	
+ifmap	psutil/psutil_posix.html#ifmap	psutil_posix: ifmap	
+INNER_C_UNION_9261176668105079294	psutil/psutil_posix.html#INNER_C_UNION_9261176668105079294	psutil_posix: INNER_C_UNION_9261176668105079294	
+INNER_C_UNION_7660000764852079517	psutil/psutil_posix.html#INNER_C_UNION_7660000764852079517	psutil_posix: INNER_C_UNION_7660000764852079517	
+ifreq	psutil/psutil_posix.html#ifreq	psutil_posix: ifreq	
+ioctl	psutil/psutil_posix.html#ioctl,FileHandle,uint,pointer	psutil_posix: ioctl(f: FileHandle; device: uint; data: pointer): int	
+pid_exists	psutil/psutil_posix.html#pid_exists,int	psutil_posix: pid_exists(pid: int): bool	
+net_if_addrs	psutil/psutil_posix.html#net_if_addrs	psutil_posix: net_if_addrs(): Table[string, seq[Address]]	
+disk_usage	psutil/psutil_posix.html#disk_usage,string	psutil_posix: disk_usage(path: string): DiskUsage	
+ioctlsocket	psutil/psutil_posix.html#ioctlsocket,string,uint,ifreq	psutil_posix: ioctlsocket(iface_name: string; ioctl: uint; ifr: var ifreq): bool	
+net_if_mtu	psutil/psutil_posix.html#net_if_mtu,string	psutil_posix: net_if_mtu(name: string): int	
+net_if_flags	psutil/psutil_posix.html#net_if_flags,string	psutil_posix: net_if_flags(name: string): bool	
+psutil_get_nic_speed	psutil/psutil_posix.html#psutil_get_nic_speed,cint	psutil_posix: psutil_get_nic_speed(ifm_active: cint): cint	
+net_if_duplex_speed	psutil/psutil_posix.html#net_if_duplex_speed,string	psutil_posix: net_if_duplex_speed(nic_name: string): tuple[duplex: NicDuplex, speed: int]	

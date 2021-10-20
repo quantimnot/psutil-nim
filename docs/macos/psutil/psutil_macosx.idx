@@ -1,0 +1,57 @@
+c_memchr	psutil/psutil_macosx.html#c_memchr,pointer,cint,csize_t	psutil_macosx: c_memchr(s: pointer; c: cint; n: csize_t): pointer	
+c_memcmp	psutil/psutil_macosx.html#c_memcmp,pointer,pointer,csize_t	psutil_macosx: c_memcmp(a, b: pointer; size: csize_t): cint	
+c_memcpy	psutil/psutil_macosx.html#c_memcpy,pointer,pointer,csize_t	psutil_macosx: c_memcpy(a, b: pointer; size: csize_t): pointer	
+c_memmove	psutil/psutil_macosx.html#c_memmove,pointer,pointer,csize_t	psutil_macosx: c_memmove(a, b: pointer; size: csize_t): pointer	
+c_memset	psutil/psutil_macosx.html#c_memset,pointer,cint,csize_t	psutil_macosx: c_memset(p: pointer; value: cint; size: csize_t): pointer	
+c_strcmp	psutil/psutil_macosx.html#c_strcmp,cstring,cstring	psutil_macosx: c_strcmp(a, b: cstring): cint	
+c_strlen	psutil/psutil_macosx.html#c_strlen,cstring	psutil_macosx: c_strlen(a: cstring): csize_t	
+c_abort	psutil/psutil_macosx.html#c_abort	psutil_macosx: c_abort()	
+C_JmpBuf	psutil/psutil_macosx.html#C_JmpBuf	psutil_macosx: C_JmpBuf	
+SIGABRT	psutil/psutil_macosx.html#SIGABRT	psutil_macosx: SIGABRT	
+SIGFPE	psutil/psutil_macosx.html#SIGFPE	psutil_macosx: SIGFPE	
+SIGILL	psutil/psutil_macosx.html#SIGILL	psutil_macosx: SIGILL	
+SIGINT	psutil/psutil_macosx.html#SIGINT	psutil_macosx: SIGINT	
+SIGSEGV	psutil/psutil_macosx.html#SIGSEGV	psutil_macosx: SIGSEGV	
+SIGTERM	psutil/psutil_macosx.html#SIGTERM	psutil_macosx: SIGTERM	
+SIGPIPE	psutil/psutil_macosx.html#SIGPIPE	psutil_macosx: SIGPIPE	
+SIG_DFL	psutil/psutil_macosx.html#SIG_DFL	psutil_macosx: SIG_DFL	
+SIGBUS	psutil/psutil_macosx.html#SIGBUS	psutil_macosx: SIGBUS	
+c_longjmp	psutil/psutil_macosx.html#c_longjmp,C_JmpBuf,cint	psutil_macosx: c_longjmp(jmpb: C_JmpBuf; retval: cint)	
+c_setjmp	psutil/psutil_macosx.html#c_setjmp,C_JmpBuf	psutil_macosx: c_setjmp(jmpb: C_JmpBuf): cint	
+c_signal	psutil/psutil_macosx.html#c_signal,cint,CSighandlerT	psutil_macosx: c_signal(sign: cint; handler: CSighandlerT): CSighandlerT	
+c_raise	psutil/psutil_macosx.html#c_raise,cint	psutil_macosx: c_raise(sign: cint): cint	
+CFilePtr	psutil/psutil_macosx.html#CFilePtr	psutil_macosx: CFilePtr	
+cstderr	psutil/psutil_macosx.html#cstderr	psutil_macosx: cstderr	
+cstdout	psutil/psutil_macosx.html#cstdout	psutil_macosx: cstdout	
+cstdin	psutil/psutil_macosx.html#cstdin	psutil_macosx: cstdin	
+c_fprintf	psutil/psutil_macosx.html#c_fprintf,CFilePtr,cstring	psutil_macosx: c_fprintf(f: CFilePtr; frmt: cstring): cint	
+c_printf	psutil/psutil_macosx.html#c_printf,cstring	psutil_macosx: c_printf(frmt: cstring): cint	
+c_fputs	psutil/psutil_macosx.html#c_fputs,cstring,CFilePtr	psutil_macosx: c_fputs(c: cstring; f: CFilePtr): cint	
+c_sprintf	psutil/psutil_macosx.html#c_sprintf,cstring,cstring	psutil_macosx: c_sprintf(buf, frmt: cstring): cint	
+c_malloc	psutil/psutil_macosx.html#c_malloc,csize_t	psutil_macosx: c_malloc(size: csize_t): pointer	
+c_calloc	psutil/psutil_macosx.html#c_calloc,csize_t,csize_t	psutil_macosx: c_calloc(nmemb, size: csize_t): pointer	
+c_free	psutil/psutil_macosx.html#c_free,pointer	psutil_macosx: c_free(p: pointer)	
+c_realloc	psutil/psutil_macosx.html#c_realloc,pointer,csize_t	psutil_macosx: c_realloc(p: pointer; newsize: csize_t): pointer	
+c_fwrite	psutil/psutil_macosx.html#c_fwrite,pointer,csize_t,csize_t,CFilePtr	psutil_macosx: c_fwrite(buf: pointer; size, n: csize_t; f: CFilePtr): cint	
+rawWriteString	psutil/psutil_macosx.html#rawWriteString,CFilePtr,cstring,int	psutil_macosx: rawWriteString(f: CFilePtr; s: cstring; length: int)	
+rawWrite	psutil/psutil_macosx.html#rawWrite,CFilePtr,cstring	psutil_macosx: rawWrite(f: CFilePtr; s: cstring)	
+offset	psutil/psutil_macosx.html#offset.t,ptr.T,int	psutil_macosx: offset[T](p: ptr T; count: int): ptr T	
+offset	psutil/psutil_macosx.html#offset.t,pointer,int	psutil_macosx: offset(p: pointer; bytes: int): pointer	
+boot_time	psutil/psutil_macosx.html#boot_time	psutil_macosx: boot_time(): int	
+uptime	psutil/psutil_macosx.html#uptime	psutil_macosx: uptime(): int	
+cpu_times	psutil/psutil_macosx.html#cpu_times	psutil_macosx: cpu_times(): CPUTimes	
+cpu_stats	psutil/psutil_macosx.html#cpu_stats	psutil_macosx: cpu_stats(): tuple[ctx_switches, interrupts, soft_interrupts, syscalls: int]	
+pids	psutil/psutil_macosx.html#pids	psutil_macosx: pids(): seq[int]	
+cpu_count_logical	psutil/psutil_macosx.html#cpu_count_logical	psutil_macosx: cpu_count_logical(): int	
+cpu_count_physical	psutil/psutil_macosx.html#cpu_count_physical	psutil_macosx: cpu_count_physical(): int	
+virtual_memory	psutil/psutil_macosx.html#virtual_memory	psutil_macosx: virtual_memory(): VirtualMemory	
+swap_memory	psutil/psutil_macosx.html#swap_memory	psutil_macosx: swap_memory(): SwapMemory	
+calloc	psutil/psutil_macosx.html#calloc,int,csize_t	psutil_macosx: calloc(p: int; newsize: csize_t): pointer	
+disk_partitions	psutil/psutil_macosx.html#disk_partitions	psutil_macosx: disk_partitions(all = false): seq[DiskPartition]	
+users	psutil/psutil_macosx.html#users	psutil_macosx: users(): seq[User]	
+per_cpu_times	psutil/psutil_macosx.html#per_cpu_times	psutil_macosx: per_cpu_times(): seq[CPUTimes]	
+per_nic_net_io_counters	psutil/psutil_macosx.html#per_nic_net_io_counters	psutil_macosx: per_nic_net_io_counters(): TableRef[string, NetIO]	
+pid_exists	psutil/psutil_macosx.html#pid_exists,int	psutil_macosx: pid_exists(pid: int): bool	
+per_disk_io_counters	psutil/psutil_macosx.html#per_disk_io_counters	psutil_macosx: per_disk_io_counters(): TableRef[string, DiskIO]	
+net_connections	psutil/psutil_macosx.html#net_connections,string,int	psutil_macosx: net_connections(kind = &quot;inet&quot;; pid = -1): seq[Connection]	
+net_if_stats	psutil/psutil_macosx.html#net_if_stats	psutil_macosx: net_if_stats(): TableRef[string, NICStats]	
