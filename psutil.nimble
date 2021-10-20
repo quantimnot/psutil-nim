@@ -10,10 +10,12 @@ skipDirs      = @["tests"]
 requires "nim >= 1.2.6"
 
 task test, "Runs the test suite":
-  exec "nim r tests/quick_test"
   when defined linux:
     exec "nim r tests/test_linux"
+    exec "nim r tests/quick_test"
   elif defined windows:
-    exec "nim r tests/test_windows"
+    exec "nim.exe r tests/test_windows"
+    exec "nim.exe r tests/quick_test"
   else:
     exec "nim r tests/test_posix"
+    exec "nim r tests/quick_test"
