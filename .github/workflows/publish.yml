@@ -81,7 +81,7 @@ jobs:
           git config --global user.email "${{github.actor}}@users.noreply.github.com"
           git checkout gh-pages
           rm -rf docs/{linux,posix}
-          mv htmldocs/{linux,posix} docs
+          mv htmldocs/{linux,posix,*.*} docs
           rm -rf htmldocs
           git add -A
           git commit -m "linux and posix gh pages"
