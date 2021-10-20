@@ -1,5 +1,9 @@
 name: publish
 
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -7,21 +11,40 @@ on:
 
 jobs:
   gh-pages:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        branch: gh-pages
-        fetch-depth: 1
-        token: ${{secrets.GH_PAGES_TOKEN}}
-    - name: Deploy GitHub Docs
-      if: runner.os != 'Windows'
-      run: |
-        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
-        sh choosenim.sh -y
-        export PATH="${HOME}/.nimble/bin:${PATH}"
-        choosenim stable
-        nim doc --project --index:on --outdir:. src/psutil.nim
-        git add -A
-        git commit -m "gh pages"
-        git push
+      - uses: actions/checkout@v2
+        with:
+          branch: gh-pages
+          fetch-depth: 1
+          token: ${{secrets.GH_PAGES_TOKEN}}
+      - name: Deploy GitHub Docs ${{matrix.os}}
+        if: runner.os != 'Windows'
+        run: |
+          curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+          sh choosenim.sh -y
+          export PATH="${HOME}/.nimble/bin:${PATH}"
+          choosenim stable
+          nimble docs
+          git add -A
+          git commit -m "gh pages"
+          git push
+      - name: Deploy GitHub Docs ${{matrix.os}}
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
+          echo n | ./choosenim.exe stable
+          export PATH="${HOME}/.nimble/bin:${PATH}"
+          echo y | nimble install
+          nimble docs
+          git add -A
+          git commit -m "gh pages"
+          git push

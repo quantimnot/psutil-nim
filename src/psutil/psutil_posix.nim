@@ -75,7 +75,6 @@ type
     ifr_ifru*: INNER_C_UNION_7660000764852079517
 
 
-################################################################################
 proc ioctl*(f: FileHandle, device: uint, data: pointer): int {.header: "<sys/ioctl.h>".}
 proc getifaddrs( ifap: var ptr ifaddrs ): int {.header: "<ifaddrs.h>".}
 proc freeifaddrs( ifap: ptr ifaddrs ): void {.header: "<ifaddrs.h>".}

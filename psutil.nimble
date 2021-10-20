@@ -12,11 +12,25 @@ requires "nim >= 1.2.6"
 when defined windows:
   requires "winim"
 
+
 task docs, "Generate docs":
+  rmDir "docs"
+  when defined linux:
+    exec "nim doc --project --outdir:docs/linux src/psutil.nim"
+    exec "nim doc --project --outdir:docs/posix src/psutil.nim"
+  elif defined windows:
+    exec "nim.exe doc --project --outdir:docs/windows src/psutil.nim"
+  elif defined macosx:
+    exec "nim doc --project --outdir:docs/macos src/psutil.nim"
+    exec "nim doc --project --outdir:docs/posix src/psutil.nim"
+  elif defined posix:
+    exec "nim doc --project --outdir:docs/posix src/psutil.nim"
+
   when defined windows:
-    exec "nim.exe doc src/psutil.nim"
+    exec "nim.exe rst2html --outdir:docs doc/index.rst"
   else:
-    exec "nim doc src/psutil.nim"
+    exec "nim rst2html --outdir:docs doc/index.rst"
+
 
 task test_all, "Runs all tests":
   when defined linux:

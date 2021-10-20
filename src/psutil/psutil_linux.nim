@@ -1,4 +1,4 @@
-{.deadCodeElim: on.} 
+{.deadCodeElim: on.}
 import algorithm, math, net, os, posix, sequtils, sets, strutils, tables, times
 import strformat
 import common, psutil_posix
@@ -130,7 +130,6 @@ type ethtool_cmd = object
     lp_advertising*: uint32
     reserved*: array[2, uint32]
 
-################################################################################
 proc getutent(): ptr utmp {.header: "<utmp.h>".}
 proc setutent() {.header: "<utmp.h>".}
 proc endutent() {.header: "<utmp.h>".}
@@ -193,7 +192,7 @@ proc pid_cmdline*(pid: int): string =
 
     ## Function for getting the cmdline of a pid
     ## this gets path of command and arguments
-    
+
     let cmdline_path = PROCFS_PATH / $pid / "cmdline"
     return cmdline_path.readFile()
 
@@ -207,7 +206,7 @@ proc pids_cmdline*(pids: seq[int]): seq[string] =
 
 proc pid_name*(pid: int): string =
     ## Function for getting the process name of a pid
-    ## not to be mixed with pid_cmdline. This only gets the 
+    ## not to be mixed with pid_cmdline. This only gets the
     ## program name. Not the path and arguments
     let p_path = PROCFS_PATH / $pid / "status"
     var data = p_path.readFile()
@@ -219,7 +218,7 @@ proc pid_name*(pid: int): string =
 
 proc pid_names*(pids: seq[int]): seq[string] =
     ## Function for getting the process name of a sequence of pids
-    ## not to be mmixed with pids_cmdline. This only gets the 
+    ## not to be mmixed with pids_cmdline. This only gets the
     ## program name. Not the path and arguments.
     var ret: seq[string]
     for pid in pids:
@@ -227,7 +226,7 @@ proc pid_names*(pids: seq[int]): seq[string] =
 
     return ret
 
-proc pid_path*(pid: int): string = 
+proc pid_path*(pid: int): string =
 
     ## Function for getting the path of the elf of the running pid
     var p_path: cstring = PROCFS_PATH / $pid / "exe"
@@ -258,15 +257,15 @@ proc pid_paths*(pids: seq[int]): seq[string] =
 
 
 proc try_pid_paths*(pids: seq[int]): seq[string] =
-    
+
     ## Function for getting the paths of the specified pids
     ## Note: If an error occurs for any of the pids. The result for the corresponding
     ## pid will be ""
     for pid in pids:
         result.add(try_pid_path(pid))
-        
+
 proc pid_user*(pid: int): string =
-    
+
     ## Function for getting the username running the specified pid
     var p_path = PROCFS_PATH / $pid / "status"
     var uid = -1
@@ -281,7 +280,7 @@ proc pid_user*(pid: int): string =
     result = $pws.pw_name
 
 proc try_pid_user*(pid: int): string =
-    
+
     ## Function for getting the username running the specified pid
     var p_path = PROCFS_PATH / $pid / "status"
     var uid = -1
@@ -289,7 +288,7 @@ proc try_pid_user*(pid: int): string =
     for line in data.split("\n"):
         if "Uid:" in line:
             uid = parseInt(line.split("Uid:")[1].strip().split("\t")[0])
-        
+
     var pws = getpwuid(cast[Uid](uid))
     if pws.isNil:
         result = ""
@@ -307,7 +306,7 @@ proc try_pid_users*(pids: seq[int]): seq[string] =
         result.add(try_pid_user(pid))
 
 proc pid_parent*(pid: int): int =
-    
+
     ## Function for getting the parent pid of the specified pid
     var p_path = PROCFS_PATH / $pid / "status"
     var data = p_path.readFile()
@@ -333,7 +332,7 @@ proc process_exists*(processName: string): bool =
 proc pids_with_names*(): (seq[int], seq[string]) =
 
     ## Function for returning tuple of pids and names
-    
+
     var pids_seq = pids()
     var names_seq = pid_names(pids_seq)
 
