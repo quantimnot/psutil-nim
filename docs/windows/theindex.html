@@ -75,10 +75,6 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="common: Address" href="psutil/common.html#Address">common: Address</a></li>
           </ul></dd>
-<dt><a name="AF_PACKET" href="#AF_PACKET"><span>AF_PACKET:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="psutil_windows: AF_PACKET" href="psutil/psutil_windows.html#AF_PACKET">psutil_windows: AF_PACKET</a></li>
-          </ul></dd>
 <dt><a name="boot_time" href="#boot_time"><span>boot_time:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="psutil_windows: boot_time(): float" href="psutil/psutil_windows.html#boot_time">psutil_windows: boot_time(): float</a></li>
@@ -223,7 +219,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="pid_name" href="#pid_name"><span>pid_name:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: pid_name(processID: int): string" href="psutil/psutil_windows.html#pid_name%2Cint">psutil_windows: pid_name(processID: int): string</a></li>
+          data-doc-search-tag="psutil_windows: pid_name(pid: int): string" href="psutil/psutil_windows.html#pid_name%2Cint">psutil_windows: pid_name(pid: int): string</a></li>
           </ul></dd>
 <dt><a name="pid_names" href="#pid_names"><span>pid_names:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -235,7 +231,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="pid_parents" href="#pid_parents"><span>pid_parents:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: pid_parents(pids: seq[int]): seq[int]" href="psutil/psutil_windows.html#pid_parents%2Cseq%5Bint%5D">psutil_windows: pid_parents(pids: seq[int]): seq[int]</a></li>
+          data-doc-search-tag="psutil_windows: pid_parents(pids: openArray[int]): seq[int]" href="psutil/psutil_windows.html#pid_parents%2CopenArray%5Bint%5D">psutil_windows: pid_parents(pids: openArray[int]): seq[int]</a></li>
           </ul></dd>
 <dt><a name="pid_path" href="#pid_path"><span>pid_path:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -243,7 +239,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="pid_paths" href="#pid_paths"><span>pid_paths:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: pid_paths(pids: seq[int]): seq[string]" href="psutil/psutil_windows.html#pid_paths%2Cseq%5Bint%5D">psutil_windows: pid_paths(pids: seq[int]): seq[string]</a></li>
+          data-doc-search-tag="psutil_windows: pid_paths(pids: openArray[int]): seq[string]" href="psutil/psutil_windows.html#pid_paths%2CopenArray%5Bint%5D">psutil_windows: pid_paths(pids: openArray[int]): seq[string]</a></li>
           </ul></dd>
 <dt><a name="pids" href="#pids"><span>pids:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -259,7 +255,7 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="pid_users" href="#pid_users"><span>pid_users:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: pid_users(pids: seq[int]): seq[string]" href="psutil/psutil_windows.html#pid_users%2Cseq%5Bint%5D">psutil_windows: pid_users(pids: seq[int]): seq[string]</a></li>
+          data-doc-search-tag="psutil_windows: pid_users(pids: openArray[int]): seq[string]" href="psutil/psutil_windows.html#pid_users%2CopenArray%5Bint%5D">psutil_windows: pid_users(pids: openArray[int]): seq[string]</a></li>
           </ul></dd>
 <dt><a name="PROCESS_ARCH_UNKNOWN" href="#PROCESS_ARCH_UNKNOWN"><span>PROCESS_ARCH_UNKNOWN:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -283,10 +279,6 @@ window.addEventListener('DOMContentLoaded', main);
           <li><a class="reference external"
           data-doc-search-tag="psutil_windows: psutil_get_drive_type(drive_type: UINT): string" href="psutil/psutil_windows.html#psutil_get_drive_type%2CUINT">psutil_windows: psutil_get_drive_type(drive_type: UINT): string</a></li>
           </ul></dd>
-<dt><a name="registryPid" href="#registryPid"><span>registryPid:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="psutil_windows: registryPid" href="psutil/psutil_windows.html#registryPid">psutil_windows: registryPid</a></li>
-          </ul></dd>
 <dt><a name="SwapMemory" href="#SwapMemory"><span>SwapMemory:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="common: SwapMemory" href="psutil/common.html#SwapMemory">common: SwapMemory</a></li>
@@ -309,19 +301,19 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="try_pid_path" href="#try_pid_path"><span>try_pid_path:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: try_pid_path(pid: int): string" href="psutil/psutil_windows.html#try_pid_path%2Cint">psutil_windows: try_pid_path(pid: int): string</a></li>
+          data-doc-search-tag="psutil_windows: try_pid_path(pid: int): Option[string]" href="psutil/psutil_windows.html#try_pid_path%2Cint">psutil_windows: try_pid_path(pid: int): Option[string]</a></li>
           </ul></dd>
 <dt><a name="try_pid_paths" href="#try_pid_paths"><span>try_pid_paths:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: try_pid_paths(pids: seq[int]): seq[string]" href="psutil/psutil_windows.html#try_pid_paths%2Cseq%5Bint%5D">psutil_windows: try_pid_paths(pids: seq[int]): seq[string]</a></li>
+          data-doc-search-tag="psutil_windows: try_pid_paths(pids: openArray[int]): seq[Option[string]]" href="psutil/psutil_windows.html#try_pid_paths%2CopenArray%5Bint%5D">psutil_windows: try_pid_paths(pids: openArray[int]): seq[Option[string]]</a></li>
           </ul></dd>
 <dt><a name="try_pid_user" href="#try_pid_user"><span>try_pid_user:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: try_pid_user(pid: int): string" href="psutil/psutil_windows.html#try_pid_user%2Cint">psutil_windows: try_pid_user(pid: int): string</a></li>
+          data-doc-search-tag="psutil_windows: try_pid_user(pid: int): Option[string]" href="psutil/psutil_windows.html#try_pid_user%2Cint">psutil_windows: try_pid_user(pid: int): Option[string]</a></li>
           </ul></dd>
 <dt><a name="try_pid_users" href="#try_pid_users"><span>try_pid_users:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="psutil_windows: try_pid_users(pids: seq[int]): seq[string]" href="psutil/psutil_windows.html#try_pid_users%2Cseq%5Bint%5D">psutil_windows: try_pid_users(pids: seq[int]): seq[string]</a></li>
+          data-doc-search-tag="psutil_windows: try_pid_users(pids: openArray[int]): seq[Option[string]]" href="psutil/psutil_windows.html#try_pid_users%2CopenArray%5Bint%5D">psutil_windows: try_pid_users(pids: openArray[int]): seq[Option[string]]</a></li>
           </ul></dd>
 <dt><a name="uptime" href="#uptime"><span>uptime:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -356,7 +348,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2021-10-20 19:28:30 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2021-10-20 21:46:57 UTC</small>
       </div>
     </div>
   </div>

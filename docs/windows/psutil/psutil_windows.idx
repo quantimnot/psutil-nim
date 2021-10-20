@@ -1,7 +1,5 @@
-AF_PACKET	psutil/psutil_windows.html#AF_PACKET	psutil_windows: AF_PACKET	
 sysIdlePid	psutil/psutil_windows.html#sysIdlePid	psutil_windows: sysIdlePid	
 sysPid	psutil/psutil_windows.html#sysPid	psutil_windows: sysPid	
-registryPid	psutil/psutil_windows.html#registryPid	psutil_windows: registryPid	
 forbiddenPids	psutil/psutil_windows.html#forbiddenPids	psutil_windows: forbiddenPids	
 PROCESS_ARCH_UNKNOWN	psutil/psutil_windows.html#PROCESS_ARCH_UNKNOWN	psutil_windows: PROCESS_ARCH_UNKNOWN	
 PROCESS_ARCH_X86	psutil/psutil_windows.html#PROCESS_ARCH_X86	psutil_windows: PROCESS_ARCH_X86	
@@ -11,20 +9,20 @@ psutil_get_drive_type	psutil/psutil_windows.html#psutil_get_drive_type,UINT	psut
 psutil_get_drive_type	psutil/psutil_windows.html#psutil_get_drive_type,string	psutil_windows: psutil_get_drive_type(drive: string): string	
 getnativearch	psutil/psutil_windows.html#getnativearch	psutil_windows: getnativearch(): int	
 pids	psutil/psutil_windows.html#pids	psutil_windows: pids(): seq[int]	
-pid_name	psutil/psutil_windows.html#pid_name,int	psutil_windows: pid_name(processID: int): string	
+pid_name	psutil/psutil_windows.html#pid_name,int	psutil_windows: pid_name(pid: int): string	
 pid_names	psutil/psutil_windows.html#pid_names,seq[int]	psutil_windows: pid_names(pids: seq[int]): seq[string]	
 pid_path	psutil/psutil_windows.html#pid_path,int	psutil_windows: pid_path(pid: int): string	
-pid_paths	psutil/psutil_windows.html#pid_paths,seq[int]	psutil_windows: pid_paths(pids: seq[int]): seq[string]	
-try_pid_path	psutil/psutil_windows.html#try_pid_path,int	psutil_windows: try_pid_path(pid: int): string	
-try_pid_paths	psutil/psutil_windows.html#try_pid_paths,seq[int]	psutil_windows: try_pid_paths(pids: seq[int]): seq[string]	
+pid_paths	psutil/psutil_windows.html#pid_paths,openArray[int]	psutil_windows: pid_paths(pids: openArray[int]): seq[string]	
+try_pid_path	psutil/psutil_windows.html#try_pid_path,int	psutil_windows: try_pid_path(pid: int): Option[string]	
+try_pid_paths	psutil/psutil_windows.html#try_pid_paths,openArray[int]	psutil_windows: try_pid_paths(pids: openArray[int]): seq[Option[string]]	
 pid_parent	psutil/psutil_windows.html#pid_parent,int	psutil_windows: pid_parent(pid: int): int	
-pid_parents	psutil/psutil_windows.html#pid_parents,seq[int]	psutil_windows: pid_parents(pids: seq[int]): seq[int]	
+pid_parents	psutil/psutil_windows.html#pid_parents,openArray[int]	psutil_windows: pid_parents(pids: openArray[int]): seq[int]	
 pids_with_names	psutil/psutil_windows.html#pids_with_names	psutil_windows: pids_with_names(): (seq[int], seq[string])	
 pid_arch	psutil/psutil_windows.html#pid_arch,int	psutil_windows: pid_arch(pid: int): int	
 pid_user	psutil/psutil_windows.html#pid_user,int	psutil_windows: pid_user(pid: int): string	
-pid_users	psutil/psutil_windows.html#pid_users,seq[int]	psutil_windows: pid_users(pids: seq[int]): seq[string]	
-try_pid_user	psutil/psutil_windows.html#try_pid_user,int	psutil_windows: try_pid_user(pid: int): string	
-try_pid_users	psutil/psutil_windows.html#try_pid_users,seq[int]	psutil_windows: try_pid_users(pids: seq[int]): seq[string]	
+pid_users	psutil/psutil_windows.html#pid_users,openArray[int]	psutil_windows: pid_users(pids: openArray[int]): seq[string]	
+try_pid_user	psutil/psutil_windows.html#try_pid_user,int	psutil_windows: try_pid_user(pid: int): Option[string]	
+try_pid_users	psutil/psutil_windows.html#try_pid_users,openArray[int]	psutil_windows: try_pid_users(pids: openArray[int]): seq[Option[string]]	
 pid_domain	psutil/psutil_windows.html#pid_domain,int	psutil_windows: pid_domain(pid: int): string	
 pid_domain_user	psutil/psutil_windows.html#pid_domain_user,int	psutil_windows: pid_domain_user(pid: int): (string, string)	
 disk_partitions	psutil/psutil_windows.html#disk_partitions	psutil_windows: disk_partitions(all = false): seq[DiskPartition]	
