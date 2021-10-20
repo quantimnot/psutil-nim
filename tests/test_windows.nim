@@ -6,7 +6,7 @@ template echo_proc(x: untyped) =
 
 echo fmt"{getnativearch()}"
 # echo_proc pid_exists(77724)
-echo_proc pids_with_names()
+echo_proc try_pids_with_names()
 for pid in pids():
   if not pid in forbiddenPids:
     echo try_pid_path(pid)

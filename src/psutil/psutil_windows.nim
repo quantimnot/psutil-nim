@@ -121,9 +121,8 @@ proc pids*(): seq[int] =
     for i in 0..<numberOfReturnedPIDs:
         result.add( procArray[i].int )
 
-proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
+proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
     ## Return process name of pid.
-    ## Throws OSError whenever `pid` is non-existent or privileged.
     var szProcessName = newWString(maxProcNameLen)
     var hProcess = openProc(pid)
     if hProcess.isSome:
@@ -132,32 +131,26 @@ proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
         if EnumProcessModules(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
             szProcessName.setLen(GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen)))
         CloseHandle(hProcess.get)
-        return szProcessName.string
+        return some szProcessName.string
+
+proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
+    ## Return process name of pid.
+    ## Throws OSError whenever `pid` is non-existent or privileged.
+    let pidName = try_pid_name(pid)
+    if pidName.isSome:
+        return pidName.get
     else:
         raiseError()
 
-proc pid_names*(pids: seq[int]): seq[string] {.raises: [ValueError, OSError].} =
+proc try_pid_names*(pids: openArray[int]): seq[Option[string]] {.raises: [].} =
+    ## Function for getting the process name of pid
+    for pid in pids:
+        result.add(try_pid_name(pid))
+
+proc pid_names*(pids: openArray[int]): seq[string] {.raises: [ValueError, OSError].} =
     ## Function for getting the process name of pid
     for pid in pids:
         result.add(pid_name(pid))
-
-proc pid_path*(pid: int): string {.raises: [ValueError, OSError].} =
-    ## Return file path of process.
-    var processHandle = openProc(pid)
-    if processHandle.isSome:
-        var filename = newWString(MAX_PATH)
-        var dwSize = MAX_PATH
-        defer: CloseHandle(processHandle.get)
-        if QueryFullProcessImageNameW(processHandle.get, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
-            raiseError()
-        else:
-            return filename[0..dwSize].string
-    else:
-        raiseError()
-
-proc pid_paths*(pids: openArray[int]): seq[string] {.raises: [ValueError, OSError].} =
-    for pid in pids:
-        result.add(pid_path(pid))
 
 proc try_pid_path*(pid: int): Option[string] {.raises: [].} =
     var processHandle = openProc(pid)
@@ -172,6 +165,18 @@ proc try_pid_paths*(pids: openArray[int]): seq[Option[string]] =
     ## Function to return the paths of the exes (sequence of strings) of the running pids.
     for pid in pids:
         result.add(try_pid_path(pid))
+
+proc pid_path*(pid: int): string {.raises: [ValueError, OSError].} =
+    ## Return file path of process.
+    let pidPath = try_pid_path(pid)
+    if pidPath.isSome:
+        return pidPath.get
+    else:
+        raiseError()
+
+proc pid_paths*(pids: openArray[int]): seq[string] {.raises: [ValueError, OSError].} =
+    for pid in pids:
+        result.add(pid_path(pid))
 
 proc pid_parent*(pid: int): int {.raises: [].} =
     var h: HANDLE
@@ -195,6 +200,11 @@ proc pids_with_names*(): (seq[int], seq[string]) {.raises: [ValueError, OSError]
     ## Function for returning tuple of pids and names
     result[0] = pids()
     result[1] = pid_names(result[0])
+
+proc try_pids_with_names*(): (seq[int], seq[Option[string]]) {.raises: [ValueError, OSError].} =
+    ## Function for returning tuple of pids and names
+    result[0] = pids()
+    result[1] = try_pid_names(result[0])
 
 proc pid_arch*(pid: int): int {.raises: [ValueError, OSError].} =
     ## function for getting the architecture of the pid running

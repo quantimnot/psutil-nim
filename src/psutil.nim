@@ -53,7 +53,12 @@ elif defined(windows):
     export
         forbiddenPids,
         getnativearch,
+        pid_name,
+        try_pid_name,
+        pids_names,
+        try_pids_names,
         pids_with_names,
+        try_pids_with_names,
         pid_arch,
         pid_user,
         try_pid_user,
