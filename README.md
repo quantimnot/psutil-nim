@@ -2,7 +2,7 @@
 
 > Port of Python [psutil](https://github.com/giampaolo/psutil) to Nim.
 
-[![](http://github-actions.40ants.com/quantimnot/psutil-nim/matrix.svg)](https://github.com/quantimnot/psutil-nim)
+[![](http://github-actions.40ants.com/quantimnot/psutil-nim/matrix.svg?only=tests.tests)](https://github.com/quantimnot/psutil-nim/actions)
 
 **Pull requests with bug fixes and support for other platforms are welcome!**
 
