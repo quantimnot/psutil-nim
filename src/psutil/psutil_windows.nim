@@ -1,7 +1,7 @@
 ## TODO:
 ##   - Consider using `NtQuerySystemInformation <https://docs.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation>`_
 ##     to get more detailed proc info for previleged procs.
-##   - Consider a module that uses `https://github.com/processhacker/processhacker`_.
+##   - Consider a module that uses `processhacker <https://github.com/processhacker/processhacker>`_.
 ##     Would need to be GPL.
 
 {.deadCodeElim: on.}
