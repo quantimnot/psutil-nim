@@ -21,7 +21,7 @@ jobs:
         sh choosenim.sh -y
         export PATH="${HOME}/.nimble/bin:${PATH}"
         choosenim stable
-        nim doc --project --index:on --outdir:.
+        nim doc --project --index:on --outdir:. src/psutil.nim
         git add -A
         git commit -m "gh pages"
         git push
