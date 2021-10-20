@@ -17,9 +17,9 @@ const HI_T = 429.4967296
 
 const
     sysIdlePid* = 0
-    # sysPid* = 4
+    sysPid* = 4
     # registryPid* = 88 # TODO: I don't know if this always holds true.
-    forbiddenPids* = {sysIdlePid} #, sysPid, registryPid}
+    forbiddenPids* = {sysIdlePid, sysPid} #, registryPid}
 
 # Make some constants for process architecture
 const PROCESS_ARCH_UNKNOWN* = 0 # architecture is unknown
@@ -55,8 +55,8 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
     ## https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
     if dwProcessId == sysIdlePid:
         raise newException(ValueError, "System Idle Process (pid " & $sysIdlePid & ") can not be opened.")
-    # elif dwProcessId == sysPid:
-    #     raise newException(ValueError, "System (pid " & $sysPid & ") can not be opened.")
+    elif dwProcessId == sysPid:
+        raise newException(ValueError, "System (pid " & $sysPid & ") can not be opened.")
     # elif dwProcessId == registryPid:
     #     raise newException(ValueError, "Registry (pid " & $registryPid & ") can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
@@ -149,8 +149,8 @@ proc pid_name*(processID: int): string =
     case processID
     of sysIdlePid:
         result = "System Idle Process"
-    # of sysPid:
-    #     result = "System"
+    of sysPid:
+        result = "System"
     # of registryPid:
     #     result = "Registry"
     else:
