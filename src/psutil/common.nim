@@ -1,8 +1,11 @@
-import math, nativesockets, posix
+import math, nativesockets
+when defined(posix):
+    import posix
 
 # type TSa_Family* {.importc: "sa_family_t", header: "<sys/socket.h>".} = cint
 type Address* = object of RootObj
-    family*: posix.TSa_Family  # int
+    when defined(posix):
+        family*: posix.TSa_Family  # int
     address*: string
     netmask*: string
     broadcast*: string
@@ -29,7 +32,7 @@ type CPUTimes* = object of RootObj
         steal*: float
         guest*: float
         guest_nice*: float
-    
+
 
 type DiskUsage* = object of RootObj
     total*: int

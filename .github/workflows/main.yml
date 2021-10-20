@@ -34,6 +34,5 @@ jobs:
         export PATH="${HOME}/.nimble/bin:${PATH}"
         echo y | nimble install
         tasklist
-        pslist || true
         nimble --nim:"${HOME}/.nimble/bin/nim.exe" test
 

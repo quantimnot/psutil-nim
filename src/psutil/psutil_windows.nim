@@ -201,14 +201,12 @@ proc pid_path*(pid: int): string =
                 result.add(cast[char](c))
 
 proc pid_paths*(pids: seq[int]): seq[string] =
-    var ret: seq[string]
     for pid in pids:
-        ret.add(pid_path(pid))
-    return ret
+        result.add(pid_path(pid))
 
 proc try_pid_path*(pid: int): string =
     var processHandle: HANDLE
-    var filename: wstring
+    var filename = newWString(MAX_PATH)
     var dwSize = MAX_PATH
 
     processHandle = openProc(pid)
@@ -217,12 +215,10 @@ proc try_pid_path*(pid: int): string =
     if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
         result = ""
     else:
-        var ret: string
         for c in filename:
             if cast[char](c) == '\0':
                 break
-            ret.add(cast[char](c))
-        return ret
+            result.add(cast[char](c))
 
 
 proc try_pid_paths*(pids: seq[int]): seq[string] =
@@ -248,17 +244,14 @@ proc pid_parent*(pid: int): int =
 
 
 proc pid_parents*(pids: seq[int]): seq[int] =
-    var ret: seq[int]
     for pid in pids:
-        ret.add(pid_parent(pid))
-    return ret
+        result.add(pid_parent(pid))
 
 
 proc pids_with_names*(): (seq[int], seq[string]) =
     ## Function for returning tuple of pids and names
-    var pids_seq = pids()
-    var names_seq = pid_names(pids_seq)
-    return (pids_seq, names_seq)
+    result[0] = pids()
+    result[1] = pid_names(result[0])
 
 
 proc pid_arch*(pid: int) : int =
@@ -370,14 +363,11 @@ proc try_pid_user*(pid: int): string =
         return ""
 
     let user = wcUser[0..^1]
-    var retu: string
     for c in user:
         if cast[char](c) != '\0':
-            retu.add(cast[char](c))
+            result.add(cast[char](c))
         else:
             break
-
-    return retu
 
 
 proc try_pid_users*(pids: seq[int]): seq[string] =
@@ -397,7 +387,6 @@ proc pid_domain*(pid: int): string =
     var dwPid = cast[DWORD](pid)
     var wcUser: wstring
     var wcDomain: wstring
-
 
     hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
@@ -419,15 +408,11 @@ proc pid_domain*(pid: int): string =
         raiseError()
 
     let domain = wcDomain[0..^1]
-    var retd: string
     for c in domain:
-
         if cast[char](c) != '\0':
-            retd.add(cast[char](c))
+            result.add(cast[char](c))
         else:
             break
-
-    return retd
 
 
 proc pid_domain_user*(pid: int): (string, string) =
@@ -466,23 +451,18 @@ proc pid_domain_user*(pid: int): (string, string) =
         raiseError()
 
     let user = wcUser[0..^1]
-    var retu: string
     for c in user:
-
         if cast[char](c) != '\0':
-            retu.add(cast[char](c))
+            result[0].add(cast[char](c))
         else:
             break
 
     let domain = wcDomain[0..^1]
-    var retd: string
     for c in domain:
         if cast[char](c) != '\0':
-            retd.add(cast[char](c))
+            result[1].add(cast[char](c))
         else:
             break
-
-    return (retd, retu)
 
 proc disk_partitions*( all=false ): seq[DiskPartition] =
     result = newSeq[DiskPartition]()
@@ -557,7 +537,7 @@ proc disk_usage*( path: string ): DiskUsage =
 
     let used = total.QuadPart - free.QuadPart
     let percent = usage_percent( used.int, total.QuadPart.int, places=1 )
-    return DiskUsage( total:total.QuadPart.int, used:used.int,
+    DiskUsage( total:total.QuadPart.int, used:used.int,
                       free:free.QuadPart.int, percent:percent )
 
 
@@ -571,7 +551,7 @@ proc virtual_memory*(): VirtualMemory =
 
     let used = int(memInfo.ullTotalPhys - memInfo.ullAvailPhys)
     let percent =  usage_percent( used, memInfo.ullTotalPhys.int, places=1 )
-    return VirtualMemory( total: memInfo.ullTotalPhys.int,
+    VirtualMemory( total: memInfo.ullTotalPhys.int,
                           avail: memInfo.ullAvailPhys.int,
                           percent: percent,
                           used: used,
@@ -590,7 +570,7 @@ proc swap_memory*(): SwapMemory =
     let free = memInfo.ullAvailPageFile.int
     let used = total - free
     let percent = usage_percent(used, total, places=1)
-    return SwapMemory(total:total, used:used, free:free, percent:percent, sin:0, sout:0)
+    SwapMemory(total:total, used:used, free:free, percent:percent, sin:0, sout:0)
 
 
 proc toUnixTime(ft: FILETIME): float =
@@ -610,13 +590,9 @@ proc toUnixTime(ft: FILETIME): float =
 
 proc boot_time*(): float =
     ## Return the system boot time expressed in seconds since the epoch
-    var fileTime : FILETIME
+    var fileTime: FILETIME
     GetSystemTimeAsFileTime(addr fileTime)
-
-    let pt = toUnixTime(fileTime)
-    let uptime = int(GetTickCount64()) / 1000
-
-    return pt - uptime
+    toUnixTime(fileTime) - int(GetTickCount64()) / 1000
 
 
 proc uptime*(): int =
@@ -684,11 +660,11 @@ proc cpu_times*(): CPUTimes =
     let per_times = per_cpu_times()
     let interrupt_sum = sum(per_times.mapIt(it.interrupt))
     let dpc_sum = sum(per_times.mapIt(it.dpc))
-    return CPUTimes(user:user, system:system, idle:idle, interrupt:interrupt_sum, dpc:dpc_sum)
+    CPUTimes(user:user, system:system, idle:idle, interrupt:interrupt_sum, dpc:dpc_sum)
 
 
 proc cpu_count_logical*(): int =
-    return cast[int](GetActiveProcessorCount(ALL_PROCESSOR_GROUPS))
+    cast[int](GetActiveProcessorCount(ALL_PROCESSOR_GROUPS))
 
 
 proc cpu_count_physical*(): int =
