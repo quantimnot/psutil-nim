@@ -317,6 +317,7 @@ elif defined(windows):
         pid_user,
         pid_domain,
         pid_domain_user,
+        pid_path,
         pid_paths,
         pid_parent,
         psutil_get_drive_type,
