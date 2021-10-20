@@ -1,0 +1,36 @@
+boot_time	psutil/psutil_linux.html#boot_time	psutil_linux: boot_time(): int	
+uptime	psutil/psutil_linux.html#uptime	psutil_linux: uptime(): int	
+pids	psutil/psutil_linux.html#pids	psutil_linux: pids(): seq[int]	
+pid_exists	psutil/psutil_linux.html#pid_exists,int	psutil_linux: pid_exists(pid: int): bool	
+pid_cmdline	psutil/psutil_linux.html#pid_cmdline,int	psutil_linux: pid_cmdline(pid: int): string	
+pids_cmdline	psutil/psutil_linux.html#pids_cmdline,seq[int]	psutil_linux: pids_cmdline(pids: seq[int]): seq[string]	
+pid_name	psutil/psutil_linux.html#pid_name,int	psutil_linux: pid_name(pid: int): string	
+pid_names	psutil/psutil_linux.html#pid_names,seq[int]	psutil_linux: pid_names(pids: seq[int]): seq[string]	
+pid_path	psutil/psutil_linux.html#pid_path,int	psutil_linux: pid_path(pid: int): string	
+try_pid_path	psutil/psutil_linux.html#try_pid_path,int	psutil_linux: try_pid_path(pid: int): string	
+pid_paths	psutil/psutil_linux.html#pid_paths,seq[int]	psutil_linux: pid_paths(pids: seq[int]): seq[string]	
+try_pid_paths	psutil/psutil_linux.html#try_pid_paths,seq[int]	psutil_linux: try_pid_paths(pids: seq[int]): seq[string]	
+pid_user	psutil/psutil_linux.html#pid_user,int	psutil_linux: pid_user(pid: int): string	
+try_pid_user	psutil/psutil_linux.html#try_pid_user,int	psutil_linux: try_pid_user(pid: int): string	
+pid_users	psutil/psutil_linux.html#pid_users,seq[int]	psutil_linux: pid_users(pids: seq[int]): seq[string]	
+try_pid_users	psutil/psutil_linux.html#try_pid_users,seq[int]	psutil_linux: try_pid_users(pids: seq[int]): seq[string]	
+pid_parent	psutil/psutil_linux.html#pid_parent,int	psutil_linux: pid_parent(pid: int): int	
+pid_parents	psutil/psutil_linux.html#pid_parents,seq[int]	psutil_linux: pid_parents(pids: seq[int]): seq[int]	
+process_exists	psutil/psutil_linux.html#process_exists,string	psutil_linux: process_exists(processName: string): bool	
+pids_with_names	psutil/psutil_linux.html#pids_with_names	psutil_linux: pids_with_names(): (seq[int], seq[string])	
+users	psutil/psutil_linux.html#users	psutil_linux: users(): seq[User]	
+cpu_times	psutil/psutil_linux.html#cpu_times	psutil_linux: cpu_times(): CPUTimes	
+per_cpu_times	psutil/psutil_linux.html#per_cpu_times	psutil_linux: per_cpu_times(): seq[CPUTimes]	
+cpu_stats	psutil/psutil_linux.html#cpu_stats	psutil_linux: cpu_stats(): tuple[ctx_switches, interrupts, soft_interrupts, syscalls: int]	
+cpu_count_logical	psutil/psutil_linux.html#cpu_count_logical	psutil_linux: cpu_count_logical(): int	
+cpu_count_physical	psutil/psutil_linux.html#cpu_count_physical	psutil_linux: cpu_count_physical(): int	
+virtual_memory	psutil/psutil_linux.html#virtual_memory	psutil_linux: virtual_memory(): VirtualMemory	
+swap_memory	psutil/psutil_linux.html#swap_memory	psutil_linux: swap_memory(): SwapMemory	
+disk_partitions	psutil/psutil_linux.html#disk_partitions	psutil_linux: disk_partitions(all = false): seq[DiskPartition]	
+per_nic_net_io_counters	psutil/psutil_linux.html#per_nic_net_io_counters	psutil_linux: per_nic_net_io_counters(): TableRef[string, NetIO]	
+net_if_duplex_speed	psutil/psutil_linux.html#net_if_duplex_speed,string	psutil_linux: net_if_duplex_speed(name: string): tuple[duplex: NicDuplex, speed: int]	
+net_if_stats	psutil/psutil_linux.html#net_if_stats	psutil_linux: net_if_stats(): TableRef[string, NICStats]	
+get_partitions	psutil/psutil_linux.html#get_partitions	psutil_linux: get_partitions(): seq[string]	
+per_disk_io_counters	psutil/psutil_linux.html#per_disk_io_counters	psutil_linux: per_disk_io_counters(): TableRef[string, DiskIO]	
+net_connections	psutil/psutil_linux.html#net_connections,string,int	psutil_linux: net_connections(kind = &quot;inet&quot;; pid = -1): seq[Connection]	
+isSsd	psutil/psutil_linux.html#isSsd,char	psutil_linux: isSsd(diskLetter: char): bool	
