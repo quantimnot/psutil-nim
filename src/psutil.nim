@@ -312,4 +312,12 @@ when defined(linux):
 elif defined(windows):
     export
         getnativearch,
-        pids_with_names
+        pids_with_names,
+        pid_arch,
+        pid_user,
+        pid_domain,
+        pid_domain_user,
+        pid_paths,
+        pid_parent,
+        psutil_get_drive_type,
+        process_exists
