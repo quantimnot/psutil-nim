@@ -14,9 +14,9 @@ when defined windows:
 
 task docs, "Generate docs":
   when defined windows:
-    exec "nim.exe doc src/psutils"
+    exec "nim.exe doc src/psutil.nim"
   else:
-    exec "nim doc src/psutils"
+    exec "nim doc src/psutil.nim"
 
 task test_all, "Runs all tests":
   when defined linux:
