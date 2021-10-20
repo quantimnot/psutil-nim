@@ -52,6 +52,7 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_INFORMATION
         raise newException(ValueError, "The System Idle Process (pid 0) can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result == 0:
+        echo $dwProcessId
         raiseError()
 
 proc psutil_get_drive_type*( drive_type: UINT ): string =
