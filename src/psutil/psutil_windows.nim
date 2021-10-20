@@ -187,10 +187,11 @@ proc pid_path*(pid: int): string =
         result = ""
     else:
         var processHandle: HANDLE
-        var filename: wstring
+        var filename = newWString(MAX_PATH)
         var dwSize = MAX_PATH
         processHandle = openProc(pid)
         defer: CloseHandle(processHandle)
+        echo $processHandle
         if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
             raiseError()
         else:
