@@ -28,7 +28,7 @@ jobs:
       if: ${{ matrix.os == 'windows-latest' }}
       run: |
         curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
-        choosenim.exe
+        & "choosenim.exe"
     - name: Test
       run: |
         nimble refresh
