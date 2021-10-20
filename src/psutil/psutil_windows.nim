@@ -51,6 +51,7 @@ proc raiseError() =
 
 proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INFORMATION, bInheritHandle: WINBOOL = FALSE): HANDLE =
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
+    ## https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
     if dwProcessId == sysIdlePid:
         raise newException(ValueError, "System Idle Process (pid 0) can not be opened.")
     elif dwProcessId == sysPid:
@@ -72,7 +73,6 @@ proc psutil_get_drive_type*( drive_type: UINT ): string =
         else: "?"
 
 proc psutil_get_drive_type*(drive: string): string =
-
     var drive_type = GetDriveTypeW(drive)
     case drive_type
         of DRIVE_FIXED: "fixed"
@@ -142,16 +142,10 @@ proc pids*(): seq[int] =
         result.add( procArray[i].int )
 
 proc pid_name*(processID: int): string =
-
-    #[
-        function for getting the process name of pid
-    ]#
+    ## Function for getting the process name of pid
     var szProcessName: wstring #array[MAX_PATH, TCHAR]
 
-    # szProcessName[0] = cast[TCHAR]("")
-
     #  Get a handle to the process.
-
     var hProcess = openProc(processID, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
 
     #  Get the process name.
@@ -164,7 +158,6 @@ proc pid_name*(processID: int): string =
                             cast[DWORD](szProcessName.len) )
 
     # Release the handle to the process.
-
     CloseHandle( hProcess )
 
     # return the process name
@@ -178,10 +171,7 @@ proc pid_name*(processID: int): string =
     return ret
 
 proc pid_names*(pids: seq[int]): seq[string] =
-
-    #[
-        function for getting the process name of pid
-    ]#
+    ## Function for getting the process name of pid
     var ret: seq[string]
     for pid in pids:
         if pid == sysIdlePid:
@@ -213,15 +203,12 @@ proc pid_path*(pid: int): string =
         raiseError()
 
 proc pid_paths*(pids: seq[int]): seq[string] =
-
     var ret: seq[string]
     for pid in pids:
         ret.add(pid_path(pid))
-
     return ret
 
 proc try_pid_path*(pid: int): string =
-
     var processHandle: HANDLE
     var filename: wstring
     var dwSize = MAX_PATH
@@ -239,14 +226,14 @@ proc try_pid_path*(pid: int): string =
             ret.add(cast[char](c))
         return ret
 
-proc try_pid_paths*(pids: seq[int]): seq[string] =
 
+proc try_pid_paths*(pids: seq[int]): seq[string] =
     ## Function to return the paths of the exes (sequence of strings) of the running pids.
     for pid in pids:
         result.add(try_pid_path(pid))
 
-proc pid_parent*(pid: int): int =
 
+proc pid_parent*(pid: int): int =
     var h: HANDLE
     var pe: PROCESSENTRY32
     var ppid = cast[DWORD](0)
@@ -261,26 +248,22 @@ proc pid_parent*(pid: int): int =
     CloseHandle(h);
     return cast[int](ppid)
 
-proc pid_parents*(pids: seq[int]): seq[int] =
 
+proc pid_parents*(pids: seq[int]): seq[int] =
     var ret: seq[int]
     for pid in pids:
         ret.add(pid_parent(pid))
-
     return ret
 
+
 proc pids_with_names*(): (seq[int], seq[string]) =
-
     ## Function for returning tuple of pids and names
-
     var pids_seq = pids()
     var names_seq = pid_names(pids_seq)
-
     return (pids_seq, names_seq)
 
 
 proc pid_arch*(pid: int) : int =
-
     ## function for getting the architecture of the pid running
     var bIsWow64: BOOL
     var nativeArch = static PROCESS_ARCH_UNKNOWN
@@ -307,7 +290,6 @@ proc pid_arch*(pid: int) : int =
         result = nativeArch
 
 proc pid_user*(pid: int): string =
-
     ## Attempt to get the username associated with the given pid.
     var hProcess: HANDLE
     var hToken: HANDLE
@@ -352,7 +334,6 @@ proc pid_user*(pid: int): string =
     return retu
 
 proc pid_users*(pids: seq[int]): seq[string] =
-
     ## Function for getting a sequence of users
     for pid in pids:
         result.add(pid_user(pid))
@@ -403,13 +384,11 @@ proc try_pid_user*(pid: int): string =
 
 
 proc try_pid_users*(pids: seq[int]): seq[string] =
-
     ## Function for getting users of specified pids
     for pid in pids:
         result.add(try_pid_user(pid))
 
 proc pid_domain*(pid: int): string =
-
     ## Attempt to get the domain associated with the given pid.
     var hProcess: HANDLE
     var hToken: HANDLE
@@ -455,7 +434,6 @@ proc pid_domain*(pid: int): string =
 
 
 proc pid_domain_user*(pid: int): (string, string) =
-
     ## Attempt to get the domain and username associated with the given pid.
     var hProcess: HANDLE
     var hToken: HANDLE
@@ -651,7 +629,6 @@ proc uptime*(): int =
 
 proc per_cpu_times*(): seq[CPUTimes] =
     ## Return system per-CPU times as a sequence of CPUTimes.
-
     let ncpus = GetActiveProcessorCount(ALL_PROCESSOR_GROUPS)
     if ncpus == 0:
         return result
@@ -909,7 +886,6 @@ proc users*(): seq[User] =
     WTSFreeMemory(sessions)
 
 
-
 ## ToDo - These are all stubbed out so things compile.
 ## It also shows what needs to be done for feature parity with Linux
 proc cpu_stats*(): tuple[ctx_switches, interrupts, soft_interrupts, syscalls: int] =
@@ -930,8 +906,8 @@ proc per_disk_io_counters*(): TableRef[string, DiskIO] =
 proc per_nic_net_io_counters*(): TableRef[string, NetIO] =
     raise newException( Exception, "Function is unimplemented!")
 
-proc process_exists*(processName: string): bool =
 
+proc process_exists*(processName: string): bool =
     var exists = false
     var entry: PROCESSENTRY32
     entry.dwSize = cast[DWORD](PROCESSENTRY32.sizeof)
@@ -953,16 +929,13 @@ proc process_exists*(processName: string): bool =
     CloseHandle(snapshot)
     return exists
 
-proc pid_exists*(pid: int): bool =
 
+proc pid_exists*(pid: int): bool =
     var p = openProc(pid, SYNCHRONIZE);
     var r = WaitForSingleObject(p, 0);
     CloseHandle(p);
     return r == WAIT_TIMEOUT
 
 
-
 proc pid_cmdline*(pid: int): string =
     raise newException( Exception, "Function is unimplemented!")
-
-
