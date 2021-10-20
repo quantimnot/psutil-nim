@@ -37,4 +37,5 @@ jobs:
     - name: Test
       shell: bash
       run: |
-        nimble test || env
+        nimble test
+        [ $? -ne 0 ] && { ls -l "${HOME}/.nimble/bin"; env; }
