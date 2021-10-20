@@ -49,7 +49,7 @@ proc raiseError() =
     discard SetErrorMode( 0 )
     raise newException( OSError, "ERROR ($1): $2" % [$error_code, $error_message] )
 
-proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_INFORMATION, bInheritHandle: WINBOOL = FALSE): HANDLE =
+proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INFORMATION, bInheritHandle: WINBOOL = FALSE): HANDLE =
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     if dwProcessId == sysIdlePid:
         raise newException(ValueError, "System Idle Process (pid 0) can not be opened.")
