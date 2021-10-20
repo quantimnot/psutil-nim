@@ -183,8 +183,7 @@ proc pid_names*(pids: seq[int]): seq[string] =
         result.add(pid_name(pid))
 
 proc pid_path*(pid: int): string =
-    case pid
-    of forbiddenPids:
+    if pid in forbiddenPids:
         result = ""
     else:
         var processHandle: HANDLE
