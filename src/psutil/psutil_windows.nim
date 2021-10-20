@@ -131,7 +131,7 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
         if EnumProcessModules(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
             szProcessName.setLen(GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen)))
         CloseHandle(hProcess.get)
-        return some szProcessName.string
+        return some $szProcessName
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Return process name of pid.
@@ -159,7 +159,7 @@ proc try_pid_path*(pid: int): Option[string] {.raises: [].} =
         var dwSize = MAX_PATH
         defer: CloseHandle(processHandle.get)
         if QueryFullProcessImageNameW(processHandle.get, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == TRUE:
-            return some filename[0..dwSize].string
+            return some $filename[0..dwSize-1]
 
 proc try_pid_paths*(pids: openArray[int]): seq[Option[string]] =
     ## Function to return the paths of the exes (sequence of strings) of the running pids.
@@ -251,7 +251,7 @@ proc pid_user*(pid: int): string {.raises: [ValueError, OSError].} =
         GetTokenInformation(hToken, tokenUser, pUser.addr, cast[DWORD](dwLength), cast[PDWORD](dwLength.addr))
         if LookupAccountSidW(cast[LPCWSTR](NULL), pUser.User.Sid, wcUser, dwUserLength.addr, wcDomain, dwDomainLength.addr, peUse.addr) == FALSE:
             raiseError()
-        return wcUser[0..dwUserLength].string
+        return $wcUser[0..dwUserLength-1]
     else:
         raiseError()
 
@@ -283,7 +283,7 @@ proc try_pid_user*(pid: int): Option[string] {.raises: [].} =
         GetTokenInformation(hToken, tokenUser, cast[LPVOID](pUser.addr), cast[DWORD](0), cast[PDWORD](dwLength.addr))
         GetTokenInformation(hToken, tokenUser, pUser.addr, cast[DWORD](dwLength), cast[PDWORD](dwLength.addr))
         if LookupAccountSidW(cast[LPCWSTR](NULL), pUser.User.Sid, wcUser, dwUserLength.addr, wcDomain, dwDomainLength.addr, peUse.addr) == TRUE:
-            return some wcUser[0..dwUserLength].string
+            return some $wcUser[0..dwUserLength-1]
 
 proc try_pid_users*(pids: openArray[int]): seq[Option[string]] {.raises: [].} =
     ## Function for getting users of specified pids
@@ -314,7 +314,7 @@ proc pid_domain*(pid: int): string {.raises: [ValueError, OSError].} =
         GetTokenInformation(hToken, tokenUser, pUser.addr, cast[DWORD](dwLength), cast[PDWORD](dwLength.addr))
         if LookupAccountSidW(cast[LPCWSTR](NULL), pUser.User.Sid, wcUser, dwUserLength.addr, wcDomain, dwDomainLength.addr, peUse.addr) == FALSE:
             raiseError()
-        return wcDomain[0..dwDomainLength].string
+        return $wcDomain[0..dwDomainLength-1]
     else:
         raiseError()
 
@@ -344,8 +344,8 @@ proc pid_domain_user*(pid: int): (string, string) {.raises: [ValueError, OSError
             # raiseError()
         if LookupAccountSidW(cast[LPCWSTR](NULL), pUser.User.Sid, wcUser, dwUserLength.addr, wcDomain, dwDomainLength.addr, peUse.addr) == FALSE:
             raiseError()
-        result[0] = wcUser[0..dwUserLength-1].string
-        result[0] = wcDomain[0..dwDomainLength-1].string
+        result[0] = $wcUser[0..dwUserLength-1]
+        result[0] = $wcDomain[0..dwDomainLength-1]
     else:
         raiseError()
 
