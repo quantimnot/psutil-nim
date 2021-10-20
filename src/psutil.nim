@@ -4,13 +4,13 @@ Linux To Do -
     process_iter()
     wait_procs(procs, timeout=None, callback=None)
 ]##
-import math
-import os
-import sequtils
-import strutils
-import tables
-
-import psutil/common
+import
+    math,
+    os,
+    sequtils,
+    strutils,
+    tables,
+    psutil/common
 
 when defined(linux):
   import psutil/psutil_linux as platform except
@@ -31,7 +31,45 @@ when defined(posix):
   import psutil/psutil_posix except
       pid_exists, cpu_count, cpu_percent, per_cpu_percent, virtual_memory,
       net_io_counters
-################################################################################
+
+export
+    tables,
+    NicDuplex,
+    boot_time,
+    uptime,
+    users,
+    pids,
+    cpu_stats,
+    cpu_times,
+    per_cpu_times,
+    swap_memory,
+    disk_usage,
+    per_disk_io_counters,
+    disk_partitions,
+    net_if_addrs,
+    per_nic_net_io_counters,
+    net_if_stats,
+    net_connections
+
+when defined(linux):
+    export
+        pid_user,
+        pids_with_names
+elif defined(windows):
+    export
+        forbiddenPids,
+        getnativearch,
+        pids_with_names,
+        pid_arch,
+        pid_user,
+        pid_domain,
+        pid_domain_user,
+        pid_path,
+        pid_paths,
+        pid_parent,
+        psutil_get_drive_type,
+        process_exists
+
 var g_last_cpu_times: CPUTimes
 var g_last_per_cpu_times: seq[CPUTimes]
 try:
@@ -43,7 +81,6 @@ except IOError:
 var g_total_phymem: int
 
 
-################################################################################
 proc pid_exists*( pid: int ): bool =
     ## Return True if given PID exists in the current process list.
     ## This is faster than doing "pid in psutil.pids()" and should be preferred.
@@ -274,52 +311,3 @@ proc disk_io_counters: DiskIO =
             result.read_merged_count += counter.read_merged_count
             result.write_merged_count += counter.write_merged_count
             result.busy_time += counter.busy_time
-
-
-################################################################################
-export tables
-
-export NicDuplex
-
-export
-    boot_time,
-    uptime,
-    users,
-    pids,
-    pid_exists,
-    cpu_count,
-    cpu_stats,
-    cpu_times,
-    per_cpu_times,
-    cpu_percent,
-    per_cpu_percent,
-    virtual_memory,
-    swap_memory,
-    disk_usage,
-    disk_io_counters,
-    per_disk_io_counters,
-    disk_partitions,
-    net_if_addrs,
-    net_io_counters,
-    per_nic_net_io_counters,
-    net_if_stats,
-    net_connections
-
-when defined(linux):
-    export
-        pid_user,
-        pids_with_names
-elif defined(windows):
-    export
-        forbiddenPids,
-        getnativearch,
-        pids_with_names,
-        pid_arch,
-        pid_user,
-        pid_domain,
-        pid_domain_user,
-        pid_path,
-        pid_paths,
-        pid_parent,
-        psutil_get_drive_type,
-        process_exists

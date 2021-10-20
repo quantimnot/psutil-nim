@@ -12,6 +12,12 @@ requires "nim >= 1.2.6"
 when defined windows:
   requires "winim"
 
+task docs, "Generate docs":
+  when defined windows:
+    exec "nim.exe docs src/psutils"
+  else:
+    exec "nim docs src/psutils"
+
 task test_all, "Runs all tests":
   when defined linux:
     exec "nim r tests/test_linux"

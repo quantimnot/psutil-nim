@@ -1,11 +1,27 @@
 name: build
 
-on: [push]
+concurrency:
+  group: build
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+  push:
+    branches:
+      - master
 
 jobs:
+  noskipci:
+    runs-on: ubuntu-latest
+    if: "! contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - run: echo "not contains '[skip ci]'"
   tests:
+    needs: noskipci
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-18.04
@@ -24,6 +40,16 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
+    - name: Deploy GitHub Docs
+      if: runner.os != 'Windows'
+      run: |
+        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+        sh choosenim.sh -y
+        echo "PATH=${HOME}/.nimble/bin:${PATH}" >> "${GITHUB_ENV}"
+        export PATH="${HOME}/.nimble/bin:${PATH}"
+        choosenim ${{matrix.nim}}
+        nimble ${{matrix.testsuite}}
+        nimble docs
     - name: Test ${{matrix.os}}
       if: runner.os != 'Windows'
       run: |
@@ -33,6 +59,7 @@ jobs:
         export PATH="${HOME}/.nimble/bin:${PATH}"
         choosenim ${{matrix.nim}}
         nimble ${{matrix.testsuite}}
+        nimble docs
     - name: Test ${{matrix.os}}
       if: runner.os == 'Windows'
       shell: bash
@@ -43,3 +70,23 @@ jobs:
         echo y | nimble install
         tasklist
         nimble --nim:"${HOME}/.nimble/bin/nim.exe" ${{matrix.testsuite}}
+        nimble docs
+  gh-pages:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        branch: gh-pages
+        fetch-depth: 1
+        token: ${{secrets.gh_pages_token}}
+    - name: Deploy GitHub Docs
+      if: runner.os != 'Windows'
+      run: |
+        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+        sh choosenim.sh -y
+        export PATH="${HOME}/.nimble/bin:${PATH}"
+        choosenim ${{matrix.nim}}
+        nim docs --project --index:on --outdir:.
+        git commit -Am "gh pages"
+        git push
