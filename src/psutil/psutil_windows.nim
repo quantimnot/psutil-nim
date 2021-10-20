@@ -18,7 +18,8 @@ const HI_T = 429.4967296
 const
     sysIdlePid* = 0
     sysPid* = 4
-    forbiddenPids* = {sysIdlePid, sysPid}
+    registryPid* = 88
+    forbiddenPids* = {sysIdlePid, sysPid, registryPid}
 
 # Make some constants for process architecture
 const PROCESS_ARCH_UNKNOWN* = 0 # architecture is unknown
@@ -56,6 +57,8 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
         raise newException(ValueError, "System Idle Process (pid 0) can not be opened.")
     elif dwProcessId == sysPid:
         raise newException(ValueError, "System (pid 4) can not be opened.")
+    elif dwProcessId == registryPid:
+        raise newException(ValueError, "Registry (pid 88) can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result == 0:
         echo $dwProcessId
