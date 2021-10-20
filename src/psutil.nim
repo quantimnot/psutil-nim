@@ -272,7 +272,6 @@ proc disk_io_counters: DiskIO =
 export tables
 
 export NicDuplex
-export AF_PACKET
 
 export net_if_addrs
 export boot_time

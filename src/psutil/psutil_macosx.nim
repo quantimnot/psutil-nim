@@ -10,10 +10,10 @@ include "system/ansi_c"
 template offset*[T](p: ptr T, count: int): ptr T =
     ## Offset a pointer to T by count elements. Behavior is undefined on
     ## overflow.
-    
+
     # Actual behavior is wrapping, but this may be revised in the future to enable
     # better optimizations.
-    
+
     # We turn off checking here - too large counts is UB
     {.checks: off.}
     let bytes = count * sizeof(T)
@@ -24,7 +24,7 @@ template offset*(p: pointer, bytes: int): pointer =
     ## overflow.
     # Actual behavior is wrapping, but this may be revised in the future to enable
     # better optimizations
-    
+
     # We assume two's complement wrapping behaviour for `uint`
     cast[pointer](cast[uint](p) + cast[uint](bytes))
 
@@ -147,8 +147,8 @@ type statfs {.importc: "struct statfs", header: "<sys/mount.h>",pure, incomplete
     f_mntfromname:array[MNAMELEN,char]  # mounted file system */
     f_reserved3:char              # reserved for future use */
     f_reserved4:array[4,clong] # reserved for future use */
-    
- 
+
+
 const MNT_SYNCHRONOUS = 0x00000002 # file system written synchronously
 const MNT_RDONLY      = 0x00000001 # read only filesystem
 const MNT_NOEXEC      = 0x00000004 # can't exec from filesystem
@@ -287,13 +287,13 @@ proc get_proc_list(procList:ptr ptr StructKinfoProc;
         lim = 8
         ptrr: pointer
     var mib3 = [CTL_KERN, KERN_PROC, KERN_PROC_ALL]
-    
+
     assert not isNil(procList)
     assert isNil(procList[])
     assert not isNil(procCount)
 
     procCount[] = 0
- 
+
     while lim > 0:
         size = 0
         if sysctl(mib3.addr, 3, nil, size, nil, 0) == -1:
@@ -366,7 +366,7 @@ proc pids*(): seq[int] =
     return result
 
 
-proc cpu_count_logical*(): cint =
+proc cpu_count_logical*(): int =
     ## shared with BSD
     var
         mib: array[0..3, cint]
@@ -484,11 +484,11 @@ proc disk_partitions*(all = false): seq[DiskPartition] =
     # get the number of mount points
     # Py_BEGIN_ALLOW_THREADS
     num = getfsstat(nil, 0, MNT_NOWAIT)
-    # Py_END_ALLOW_THREADS  
+    # Py_END_ALLOW_THREADS
     # if (num == -1) :
     #     PyErr_SetFromErrno(PyExc_OSError);
     #     goto error;
-    len = sizeof(fs[]) * num 
+    len = sizeof(fs[]) * num
     fs = cast[ptr statfs](c_malloc(len.csize_t))
     if (fs == nil) :
         discard
@@ -496,13 +496,13 @@ proc disk_partitions*(all = false): seq[DiskPartition] =
         #     goto error;
     # Py_BEGIN_ALLOW_THREADS
     num = getfsstat(fs, len.clong, MNT_NOWAIT)
-    # Py_END_ALLOW_THREADS    
+    # Py_END_ALLOW_THREADS
     if (num == -1) :
         discard
         # PyErr_SetFromErrno(PyExc_OSError);
         # goto error
 
-    var 
+    var
         partition:DiskPartition
         device: cstring
         mountpoint: cstring
@@ -568,7 +568,7 @@ proc disk_partitions*(all = false): seq[DiskPartition] =
         fstype =  cast[cstring](fss[i].f_fstypename.addr)
         popts =  cast[cstring](opts.addr)
         partition = DiskPartition( device: $(device) , mountpoint: $(mountpoint), fstype: $(fstype), opts: $(popts) )
-        result.add( partition )    
+        result.add( partition )
         i.inc
 
 const UTX_USERSIZE = 256
@@ -619,9 +619,9 @@ proc users*(): seq[User] =
 
 type processor_info_array_t {.importc: "processor_info_array_t",header: "<mach/processor_info.h>",pure, incompleteStruct,nodecl.} = object
 type processor_cpu_load_info_data_t {.importc: "processor_cpu_load_info_data_t",header: "<mach/processor_info.h>".} = object
-    cpu_ticks*: array[0..3, cint] 
+    cpu_ticks*: array[0..3, cint]
 
-proc host_processor_info(a: mach_port_t; b: cint; c: ptr cint;d: ptr processor_info_array_t;e:ptr mach_msg_type_number_t) : cint{.importc:"host_processor_info",header: "<mach/processor_info.h>".} 
+proc host_processor_info(a: mach_port_t; b: cint; c: ptr cint;d: ptr processor_info_array_t;e:ptr mach_msg_type_number_t) : cint{.importc:"host_processor_info",header: "<mach/processor_info.h>".}
 
 var PROCESSOR_CPU_LOAD_INFO {.importc: "PROCESSOR_CPU_LOAD_INFO",header: "<mach/processor_info.h>".}:cint
 
@@ -629,21 +629,21 @@ proc per_cpu_times*(): seq[CPUTimes] =
     ## Return a list of tuples representing the CPU times for every
     ## CPU available on the system.
     result = newSeq[CPUTimes]()
-    var 
+    var
         cpu_count:cint
         i:int
         info_array: processor_info_array_t
         info_count:mach_msg_type_number_t
         cpu_load_info:ptr processor_cpu_load_info_data_t
         user,nice,system,idle:cdouble
-        
+
     let host_port = mach_host_self()
 
     let error = host_processor_info(host_port, PROCESSOR_CPU_LOAD_INFO,
                                 cpu_count.addr, info_array.addr, info_count.addr)
     if error != KERN_SUCCESS:
         raise newException(OSError, "host_processor_info(PROCESSOR_CPU_LOAD_INFO) syscall failed: $1" % mach_error_string(error))
-       
+
     mach_port_deallocate(mach_task_self(), host_port)
     cpu_load_info = cast[ptr processor_cpu_load_info_data_t](info_array)
     let info = cast[ptr UnCheckedArray[processor_cpu_load_info_data_t]](cpu_load_info)
@@ -655,7 +655,7 @@ proc per_cpu_times*(): seq[CPUTimes] =
         result.add CPUTimes(user:user,nice:nice,system:system,idle:idle)
         i.inc
 
-const 
+const
     NET_RT_IFLIST2 = 6
     PF_ROUTE = 17
     CTL_NET = 4
@@ -716,12 +716,12 @@ type sockaddr_dl {.importc: "struct sockaddr_dl",header: "<net/if_dl.h>",nodecl.
     sdl_slen:uint8
     sdl_data:array[12,char]
 
-      
+
 proc per_nic_net_io_counters*(): TableRef[string, NetIO] =
     ## Return network I/O statistics for every network interface
     ## installed on the system as a dict of raw tuples.
     result = newTable[string, NetIO]()
-    var 
+    var
         next: ptr char
         buf:ptr char
         lim: ptr char
@@ -743,7 +743,7 @@ proc per_nic_net_io_counters*(): TableRef[string, NetIO] =
         # discard
         # PyErr_NoMemory();
         # goto error;
-    let ret = sysctl(mib.addr, 6, nil, len, nil, 0) 
+    let ret = sysctl(mib.addr, 6, nil, len, nil, 0)
     if ret < 0:
         discard
         # PyErr_SetFromErrno(PyExc_OSError);
@@ -764,7 +764,7 @@ proc per_nic_net_io_counters*(): TableRef[string, NetIO] =
             nameChars.addr.zeroMem(32)
             nameChars.addr.copyMem(cast[pointer](sdl.sdl_data.addr),sdl.sdl_nlen)
             name = cast[cstring](nameChars.addr)
-            result[ $name ] = NetIO( 
+            result[ $name ] = NetIO(
                 bytes_sent : if2m[].ifm_data.ifi_obytes.int,
                 bytes_recv : if2m[].ifm_data.ifi_ibytes.int,
                 packets_sent : if2m[].ifm_data.ifi_opackets.int,
@@ -796,12 +796,12 @@ type CFNumberType {.importc:"CFNumberType",header:"<CoreFoundation/CoreFoundatio
 
 proc CFStringGetCString(theString:CFStringRef,buffer:ptr char,bufferSize:clong ,encoding:CFStringEncoding) {.importc:"CFStringGetCString",header:"<CoreFoundation/CoreFoundation.h>",nodecl.}
 proc CFSTR(str:cstring):cstring{.importc:"CFSTR",header:"<CoreFoundation/CoreFoundation.h>",varargs,nodecl.} # https://developer.apple.com/documentation/corefoundation/cfstr?language=occ
-proc CFDictionaryGetValue(theDict:CFDictionaryRef,key:pointer):pointer{.importc:"CFDictionaryGetValue",header:"<CoreFoundation/CoreFoundation.h>",nodecl.} 
-proc CFStringGetSystemEncoding():CFStringEncoding{.importc:"CFStringGetSystemEncoding",header:"<CoreFoundation/CoreFoundation.h>",nodecl.} 
-proc CFNumberGetValue(number:CFNumberRef,theType:CFNumberType,valuePtr:pointer):bool{.importc:"CFNumberGetValue",header:"<CoreFoundation/CoreFoundation.h>",nodecl.} 
-proc CFRelease( cf:ref object){.importc:"CFRelease",header:"<CoreFoundation/CoreFoundation.h>",nodecl.} 
+proc CFDictionaryGetValue(theDict:CFDictionaryRef,key:pointer):pointer{.importc:"CFDictionaryGetValue",header:"<CoreFoundation/CoreFoundation.h>",nodecl.}
+proc CFStringGetSystemEncoding():CFStringEncoding{.importc:"CFStringGetSystemEncoding",header:"<CoreFoundation/CoreFoundation.h>",nodecl.}
+proc CFNumberGetValue(number:CFNumberRef,theType:CFNumberType,valuePtr:pointer):bool{.importc:"CFNumberGetValue",header:"<CoreFoundation/CoreFoundation.h>",nodecl.}
+proc CFRelease( cf:ref object){.importc:"CFRelease",header:"<CoreFoundation/CoreFoundation.h>",nodecl.}
 
-var kIOMediaClass{.importc:"kIOMediaClass",header:"<IOKit/storage/IOMedia.h>",nodecl.} :cstring 
+var kIOMediaClass{.importc:"kIOMediaClass",header:"<IOKit/storage/IOMedia.h>",nodecl.} :cstring
 
 type io_iterator_t {.importc:"io_iterator_t",header:"<IOKit/IOBSD.h>",nodecl.} = object
 var kIOReturnSuccess {.importc:"kIOReturnSuccess",header:"<IOKit/IOKitLib.h>",nodecl.}:cint
@@ -822,9 +822,9 @@ proc IOServiceMatching(a:cstring):CFMutableDictionaryRef {.importc:"IOServiceMat
 
 proc IOServiceGetMatchingServices(a:mach_port_t,b: CFMutableDictionaryRef,c:pointer):cint {.importc:"IOServiceGetMatchingServices",header:"<IOKit/IOBSD.h>",nodecl.}
 proc IOIteratorNext(it:io_iterator_t): io_object_t {.importc:"IOIteratorNext",header:"<IOKit/IOKitLib.h>",nodecl.} #io_object_t or cint
-proc IOObjectRelease(it:io_registry_entry_t): void {.importc:"IOObjectRelease",header:"<IOKit/IOKitLib.h>",nodecl.} 
+proc IOObjectRelease(it:io_registry_entry_t): void {.importc:"IOObjectRelease",header:"<IOKit/IOKitLib.h>",nodecl.}
 proc IORegistryEntryGetParentEntry(entry:io_registry_entry_t,plane:cstring,parent:ptr io_registry_entry_t): cint {.importc:"IORegistryEntryGetParentEntry",header:"<IOKit/IOKitLib.h>",nodecl.} #io_object_t or cint
-proc IOObjectConformsTo(a:io_registry_entry_t,b:cstring): bool {.importc:"IOObjectConformsTo",header:"<IOKit/IOKitLib.h>",nodecl.} 
+proc IOObjectConformsTo(a:io_registry_entry_t,b:cstring): bool {.importc:"IOObjectConformsTo",header:"<IOKit/IOKitLib.h>",nodecl.}
 proc IORegistryEntryCreateCFProperties(a:io_registry_entry_t,b:ptr CFMutableDictionaryRef,c:pointer,d:cint) : cint {.importc:"IORegistryEntryCreateCFProperties",header:"<IOKit/IOKitLib.h>",nodecl.}
 
 const kMaxDiskNameSize = 64
@@ -832,9 +832,9 @@ const kIOBSDNameKey =  "BSD Name"
 const kCFNumberSInt64Type = CFNumberType(4)
 const kIOBlockStorageDriverStatisticsBytesWrittenKey = "Bytes (Write)"
 
-proc per_disk_io_counters*(): TableRef[string, DiskIO] = 
+proc per_disk_io_counters*(): TableRef[string, DiskIO] =
     result = newTable[string, DiskIO]()
-    var 
+    var
         parent_dict,props_dict,stats_dict:CFDictionaryRef
         parent,disk:io_registry_entry_t #or cint
         disk_list:io_iterator_t
@@ -864,7 +864,7 @@ proc per_disk_io_counters*(): TableRef[string, DiskIO] =
                 IOObjectRelease(disk)
                 IOObjectRelease(parent)
                 # goto error;
-        
+
             if IORegistryEntryCreateCFProperties(parent,cast[ptr CFMutableDictionaryRef](props_dict.addr),kCFAllocatorDefault,kNilOptions ) != kIOReturnSuccess:
                 # PyErr_SetString(PyExc_RuntimeError,
                 #                 "unable to get the parent's properties.");
@@ -885,14 +885,14 @@ proc per_disk_io_counters*(): TableRef[string, DiskIO] =
             CFStringGetCString(disk_name_ref, cast[ptr char](disk_name.addr),kMaxDiskNameSize,CFStringGetSystemEncoding())
 
             stats_dict = cast[CFDictionaryRef](CFDictionaryGetValue(props_dict, CFSTR(kIOBlockStorageDriverStatisticsKey)))
- 
+
             if isNil(stats_dict.addr):
                 discard
                 # PyErr_SetString(PyExc_RuntimeError,
                 #                 "Unable to get disk stats.");
                 # goto error;
-            var 
-                number:CFNumberRef 
+            var
+                number:CFNumberRef
                 reads:int64  = 0
                 writes:int64  = 0
                 read_bytes:int64  = 0
@@ -900,7 +900,7 @@ proc per_disk_io_counters*(): TableRef[string, DiskIO] =
                 read_time:int64  = 0
                 write_time:int64  = 0
                 name:cstring
-    
+
             # Get disk reads/writes
             number = cast[CFNumberRef]( CFDictionaryGetValue(stats_dict,CFSTR(kIOBlockStorageDriverStatisticsReadsKey)) )
             if not isNil(number.addr):
@@ -926,7 +926,7 @@ proc per_disk_io_counters*(): TableRef[string, DiskIO] =
             # Read/Write time on macOS comes back in nanoseconds and in psutil
             # we've standardized on milliseconds so do the conversion.
             name = cast[cstring](disk_name.addr)
-            result[$name] = DiskIO( 
+            result[$name] = DiskIO(
                 read_count:reads.int, write_count:writes.int,
                 read_bytes:read_bytes.int, write_bytes:write_bytes.int,
                 read_time:read_time.int, write_time:write_time.int
@@ -941,7 +941,7 @@ proc per_disk_io_counters*(): TableRef[string, DiskIO] =
 type proc_bsdinfo = object
     pbi_flags*:uint32
 
-proc proc_pidinfo( pid:int, flavor:int, arg:uint64, pti:pointer, size:int ): cint = 
+proc proc_pidinfo( pid:int, flavor:int, arg:uint64, pti:pointer, size:int ): cint =
     errno = 0
     var ret:cint
     var retval:int32
@@ -957,13 +957,13 @@ const PSUTIL_CONN_NONE = 128.cint
 
 proc net_connections*( kind= "inet", pid= -1 ): seq[Connection] =
     result = newSeq[Connection]()
-    var 
+    var
         pidinfo_result:int
         iterations:int
         i:int
         fds_pointer:ptr  proc_fdinfo
         fdp_pointer:ptr  proc_fdinfo
-        si: socket_fdinfo 
+        si: socket_fdinfo
         nb:cint
         laddr:cstring
         raddr:cstring
@@ -987,13 +987,13 @@ proc net_connections*( kind= "inet", pid= -1 ): seq[Connection] =
                 if nb <= 0 or nb < sizeof(si):
                     if errno == EBADF:
                         continue
-                        
+
                     else:
                         debugEcho "proc_pidfdinfo error"
                         discard
                         # psutil_raise_for_pid(   pid, "proc_pidinfo(PROC_PIDFDSOCKETINFO)");
                         # goto error;
-                var 
+                var
                     fd, family, typ, lport, rport, state:cint
                     lip,rip:array[200,char]
                     inseq:cint
@@ -1008,7 +1008,7 @@ proc net_connections*( kind= "inet", pid= -1 ): seq[Connection] =
                 #     continue;
                 # py_type = PyLong_FromLong((long)type);
                 # inseq = PySequence_Contains(py_type_filter, py_type);
-                # Py_DECREF(py_type);             
+                # Py_DECREF(py_type);
                 # if inseq == 0:
                 #     continue
                 if errno != 0:

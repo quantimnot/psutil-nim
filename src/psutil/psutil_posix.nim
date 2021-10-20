@@ -9,9 +9,10 @@ const IFHWADDRLEN* = 6
 const IF_NAMESIZE* = 16
 const IFNAMSIZ* = IF_NAMESIZE
 
-var AF_PACKET* {.header: "<sys/socket.h>".}: cint
-var IFF_BROADCAST* {.header: "<net/if.h>".}: uint
-var IFF_POINTOPOINT* {.header: "<net/if.h>".}: uint
+when defined(linux):
+  let AF_PACKET* {.header: "<sys/socket.h>".}: cint
+let IFF_BROADCAST* {.header: "<net/if.h>".}: uint
+let IFF_POINTOPOINT* {.header: "<net/if.h>".}: uint
 
 var NI_MAXHOST* {.header: "<net/if.h>".}: cint
 when bsdPlatform:
@@ -176,27 +177,29 @@ proc psutil_convert_ipaddr(address: ptr SockAddr, family: posix.TSa_Family): str
         else:
             return result.strip(chars=Whitespace + {'\x00'})
 
-    elif defined(linux) and family.int == AF_PACKET:
-        var hw_address = cast[ptr sockaddr_ll](address)
-        # TODO - this is going to break on non-Ethernet addresses (e.g. mac firewire - 8 bytes)
-        # psutil actually handles this, i just wanted to test that it was working
-        return "$1:$2:$3:$4:$5:$6".format( hw_address.sll_addr[0].int.toHex(2),
-                                           hw_address.sll_addr[1].int.toHex(2),
-                                           hw_address.sll_addr[2].int.toHex(2),
-                                           hw_address.sll_addr[3].int.toHex(2),
-                                           hw_address.sll_addr[4].int.toHex(2),
-                                           hw_address.sll_addr[5].int.toHex(2) ).tolowerAscii()
-
-
-    elif ( defined(freebsd) or defined(openbsd) or defined(darwin) or defined(netbsd) ) and family.int == AF_PACKET:
-        # struct sockaddr_dl *dladdr = (struct sockaddr_dl *)addr;
-        # len = dladdr->sdl_alen;
-        # data = LLADDR(dladdr);
-        discard
-
     else:
-        # unknown family
-        return ""
+        when defined(linux):
+            if family.int == AF_PACKET:
+                var hw_address = cast[ptr sockaddr_ll](address)
+                # TODO - this is going to break on non-Ethernet addresses (e.g. mac firewire - 8 bytes)
+                # psutil actually handles this, i just wanted to test that it was working
+                return "$1:$2:$3:$4:$5:$6".format( hw_address.sll_addr[0].int.toHex(2),
+                                                  hw_address.sll_addr[1].int.toHex(2),
+                                                  hw_address.sll_addr[2].int.toHex(2),
+                                                  hw_address.sll_addr[3].int.toHex(2),
+                                                  hw_address.sll_addr[4].int.toHex(2),
+                                                  hw_address.sll_addr[5].int.toHex(2) ).tolowerAscii()
+
+        # TODO: Fix this branch for the BSDs
+        # elif ( defined(freebsd) or defined(openbsd) or defined(darwin) or defined(netbsd) ) and family.int == AF_PACKET:
+        #     # struct sockaddr_dl *dladdr = (struct sockaddr_dl *)addr;
+        #     # len = dladdr->sdl_alen;
+        #     # data = LLADDR(dladdr);
+        #     discard
+
+        else:
+            # unknown family
+            return ""
 
 
 proc disk_usage*(path: string): DiskUsage =
@@ -280,11 +283,11 @@ when bsdPlatform:
             nodecl,pure.} = object
         ifm_name*:array[IFNAMSIZ,char]  # if name, e.g. "en0"
         ifm_current:cint    # current media options
-        ifm_mask:cint    # don't care mask 
-        ifm_status:cint    # media status 
-        ifm_active:cint    # active options 
-        ifm_count:cint    # entries in ifm_ulist array 
-        ifm_ulist:ptr cint    # media words 
+        ifm_mask:cint    # don't care mask
+        ifm_status:cint    # media status
+        ifm_active:cint    # active options
+        ifm_count:cint    # entries in ifm_ulist array
+        ifm_ulist:ptr cint    # media words
 
     const SIOCGIFMEDIA = 0xc0286938'u32
     const IFM_FDX = 0x00100000'u32

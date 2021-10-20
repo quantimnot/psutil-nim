@@ -8,3 +8,12 @@ skipDirs      = @["tests"]
 
 # Dependencies
 requires "nim >= 1.2.6"
+
+task test, "Runs the test suite":
+  exec "nim r tests/quick_test"
+  when defined linux:
+    exec "nim r tests/test_linux"
+  elif defined windows:
+    exec "nim r tests/test_windows"
+  else:
+    exec "nim r tests/test_posix"

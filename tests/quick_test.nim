@@ -1,4 +1,4 @@
-import ../psutil
+import ../src/psutil
 
 template echo_proc(x: untyped) =
   echo "\n\n", astToStr(x), "\n", x

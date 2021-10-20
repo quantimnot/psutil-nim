@@ -6,7 +6,7 @@ import ../src/psutil
 
 template echo_proc(x: untyped) =
   echo "\n\n", astToStr(x), "\n", x
-    
+
 
 proc vmstat(stat: string): int =
     for line in splitlines( execProcess("vmstat -s") ):
