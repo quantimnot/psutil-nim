@@ -1,11 +1,11 @@
-import posix, segfaults, tables, psutil_posix, nativesockets
+import posix, segfaults, tables, nativesockets
 import times except Time
 import common
 import strutils,sequtils
 import ./arch/osx/process_info
 import ./arch/osx/socket
-import psutil_posix
 include "system/ansi_c"
+import psutil_posix
 
 template offset*[T](p: ptr T, count: int): ptr T =
     ## Offset a pointer to T by count elements. Behavior is undefined on
@@ -1079,7 +1079,6 @@ proc net_if_stats*(): TableRef[string, NICstats] =
                                  duplex:duplex,
                                  speed:speed,
                                  mtu:net_if_mtu( name ) )
-
 
 when isMainModule:
     echo boot_time()

@@ -12,17 +12,25 @@ import tables
 
 import psutil/common
 
-when defined(posix):
-  import psutil/psutil_posix
-
 when defined(linux):
-  import psutil/psutil_linux as platform
+  import psutil/psutil_linux as platform except
+      pid_exists, cpu_count, cpu_percent, per_cpu_percent, virtual_memory,
+      net_io_counters
 
-when defined(windows):
-  import psutil/psutil_windows as platform
+elif defined(windows):
+  import psutil/psutil_windows as platform except
+      pid_exists, cpu_count, cpu_percent, per_cpu_percent, virtual_memory,
+      net_io_counters
 
-when defined(macosx):
-  import psutil/psutil_macosx as platform
+elif defined(macosx):
+  import psutil/psutil_macosx as platform except
+      pid_exists, cpu_count, cpu_percent, per_cpu_percent, virtual_memory,
+      net_io_counters
+
+when defined(posix):
+  import psutil/psutil_posix except
+      pid_exists, cpu_count, cpu_percent, per_cpu_percent, virtual_memory,
+      net_io_counters
 ################################################################################
 var g_last_cpu_times: CPUTimes
 var g_last_per_cpu_times: seq[CPUTimes]
@@ -273,22 +281,29 @@ export tables
 
 export NicDuplex
 
-export net_if_addrs
-export boot_time
-export uptime
-export users
-export pids
-export cpu_times
-export per_cpu_times
-export cpu_stats
-export cpu_count
-export disk_usage
-export swap_memory
-export disk_partitions
-export net_io_counters
-export per_nic_net_io_counters
+export
+    boot_time,
+    uptime,
+    users,
+    pids,
+    pid_exists,
+    cpu_count,
+    cpu_stats,
+    cpu_times,
+    per_cpu_times,
+    cpu_percent,
+    per_cpu_percent,
+    virtual_memory,
+    swap_memory,
+    disk_usage,
+    disk_io_counters,
+    per_disk_io_counters,
+    disk_partitions,
+    net_if_addrs,
+    net_io_counters,
+    per_nic_net_io_counters,
+    net_if_stats,
+    net_connections
 
-export disk_io_counters
-export per_disk_io_counters
-export net_if_stats
-export net_connections
+when defined(linux):
+    export pid_user
