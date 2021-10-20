@@ -1,3 +1,9 @@
+## TODO:
+##   - Consider using `NtQuerySystemInformation <https://docs.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntquerysysteminformation>`_
+##     to get more detailed proc info for previleged procs.
+##   - Consider a module that uses `https://github.com/processhacker/processhacker`_.
+##     Would need to be GPL.
+
 {.deadCodeElim: on.}
 
 import std/[math, options, sequtils, strformat, strutils, tables]
@@ -28,7 +34,7 @@ type SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION* {.pure.} = object
     InterruptTime*: LARGE_INTEGER
     InterruptCount*: ULONG
 
-proc raiseError() =
+proc raiseError() {.raises: [ValueError, OSError].} =
     var error_message = newWString(256)
     let error_code = GetLastError()
     let msgSize = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM,
@@ -115,9 +121,9 @@ proc pids*(): seq[int] =
     for i in 0..<numberOfReturnedPIDs:
         result.add( procArray[i].int )
 
-proc pid_name*(pid: int): string =
+proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Return process name of pid.
-    ##
+    ## Throws OSError whenever `pid` is non-existent or privileged.
     var szProcessName = newWString(maxProcNameLen)
     var hProcess = openProc(pid)
     if hProcess.isSome:
@@ -130,12 +136,13 @@ proc pid_name*(pid: int): string =
     else:
         raiseError()
 
-proc pid_names*(pids: seq[int]): seq[string] =
+proc pid_names*(pids: seq[int]): seq[string] {.raises: [ValueError, OSError].} =
     ## Function for getting the process name of pid
     for pid in pids:
         result.add(pid_name(pid))
 
-proc pid_path*(pid: int): string =
+proc pid_path*(pid: int): string {.raises: [ValueError, OSError].} =
+    ## Return file path of process.
     var processHandle = openProc(pid)
     if processHandle.isSome:
         var filename = newWString(MAX_PATH)
@@ -148,11 +155,11 @@ proc pid_path*(pid: int): string =
     else:
         raiseError()
 
-proc pid_paths*(pids: openArray[int]): seq[string] =
+proc pid_paths*(pids: openArray[int]): seq[string] {.raises: [ValueError, OSError].} =
     for pid in pids:
         result.add(pid_path(pid))
 
-proc try_pid_path*(pid: int): Option[string] =
+proc try_pid_path*(pid: int): Option[string] {.raises: [].} =
     var processHandle = openProc(pid)
     if processHandle.isSome:
         var filename = newWString(MAX_PATH)
@@ -166,7 +173,7 @@ proc try_pid_paths*(pids: openArray[int]): seq[Option[string]] =
     for pid in pids:
         result.add(try_pid_path(pid))
 
-proc pid_parent*(pid: int): int =
+proc pid_parent*(pid: int): int {.raises: [].} =
     var h: HANDLE
     var pe: PROCESSENTRY32
     var ppid = cast[DWORD](0)
@@ -180,16 +187,16 @@ proc pid_parent*(pid: int): int =
     CloseHandle(h);
     ppid
 
-proc pid_parents*(pids: openArray[int]): seq[int] =
+proc pid_parents*(pids: openArray[int]): seq[int] {.raises: [].} =
     for pid in pids:
         result.add(pid_parent(pid))
 
-proc pids_with_names*(): (seq[int], seq[string]) =
+proc pids_with_names*(): (seq[int], seq[string]) {.raises: [ValueError, OSError].} =
     ## Function for returning tuple of pids and names
     result[0] = pids()
     result[1] = pid_names(result[0])
 
-proc pid_arch*(pid: int): int =
+proc pid_arch*(pid: int): int {.raises: [ValueError, OSError].} =
     ## function for getting the architecture of the pid running
     var bIsWow64: BOOL
     var nativeArch = static PROCESS_ARCH_UNKNOWN
@@ -210,7 +217,7 @@ proc pid_arch*(pid: int): int =
     else:
         raiseError()
 
-proc pid_user*(pid: int): string =
+proc pid_user*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Attempt to get the username associated with the given pid.
     var hToken: HANDLE
     var pUser: TOKEN_USER
@@ -238,12 +245,12 @@ proc pid_user*(pid: int): string =
     else:
         raiseError()
 
-proc pid_users*(pids: openArray[int]): seq[string] =
+proc pid_users*(pids: openArray[int]): seq[string] {.raises: [ValueError, OSError].} =
     ## Function for getting a sequence of users
     for pid in pids:
         result.add(pid_user(pid))
 
-proc try_pid_user*(pid: int): Option[string] =
+proc try_pid_user*(pid: int): Option[string] {.raises: [].} =
     ## Attempt to get the username associated with the given pid.
     var hToken: HANDLE
     var pUser: TOKEN_USER
@@ -268,12 +275,12 @@ proc try_pid_user*(pid: int): Option[string] =
         if LookupAccountSidW(cast[LPCWSTR](NULL), pUser.User.Sid, wcUser, dwUserLength.addr, wcDomain, dwDomainLength.addr, peUse.addr) == TRUE:
             return some wcUser[0..dwUserLength].string
 
-proc try_pid_users*(pids: openArray[int]): seq[Option[string]] =
+proc try_pid_users*(pids: openArray[int]): seq[Option[string]] {.raises: [].} =
     ## Function for getting users of specified pids
     for pid in pids:
         result.add(try_pid_user(pid))
 
-proc pid_domain*(pid: int): string =
+proc pid_domain*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Attempt to get the domain associated with the given pid.
     var hToken: HANDLE
     var pUser: TOKEN_USER
@@ -301,7 +308,7 @@ proc pid_domain*(pid: int): string =
     else:
         raiseError()
 
-proc pid_domain_user*(pid: int): (string, string) =
+proc pid_domain_user*(pid: int): (string, string) {.raises: [ValueError, OSError].} =
     ## Attempt to get the domain and username associated with the given pid.
     var hToken: HANDLE
     var pUser: TOKEN_USER
@@ -332,34 +339,28 @@ proc pid_domain_user*(pid: int): (string, string) =
     else:
         raiseError()
 
-proc disk_partitions*( all=false ): seq[DiskPartition] =
+proc disk_partitions*( all=false ): seq[DiskPartition] {.raises: [ValueError, OSError].} =
     # avoid to visualize a message box in case something goes wrong
     # see https://github.com/giampaolo/psutil/issues/264
     discard SetErrorMode( SEM_FAILCRITICALERRORS )
-
     var drive_strings = newWString( 256 )
     let returned_len = GetLogicalDriveStringsW( 256, drive_strings )
     if returned_len == 0:
         raiseError()
         return
-
     let letters = split( strip( $drive_strings, chars={'\0'} ), '\0' )
     for drive_letter in letters:
         let drive_type = GetDriveType( drive_letter )
-
         # by default we only show hard drives and cd-roms
         if not all:
             if drive_type == DRIVE_UNKNOWN or
                drive_type == DRIVE_NO_ROOT_DIR or
                drive_type == DRIVE_REMOTE or
                drive_type == DRIVE_RAMDISK: continue
-
             # floppy disk: skip it by default as it introduces a considerable slowdown.
             if drive_type == DRIVE_REMOVABLE and drive_letter == "A:\\":
                 continue
-
-
-        var fs_type: LPWSTR = newString( 256 )
+        var fs_type = newWString( 256 )
         var pflags: DWORD = 0
         var lpdl: LPCWSTR = drive_letter
         let gvi_ret = GetVolumeInformationW( lpdl,
@@ -393,28 +394,22 @@ proc disk_partitions*( all=false ): seq[DiskPartition] =
                                    opts: opts ) )
         discard SetErrorMode( 0 )
 
-
-proc disk_usage*( path: string ): DiskUsage =
+proc disk_usage*( path: string ): DiskUsage {.raises: [ValueError, OSError].} =
     ## Return disk usage associated with path.
     var total, free: ULARGE_INTEGER
-
     let ret_code = GetDiskFreeSpaceExW( path, nil, addr total, addr free )
     if ret_code != 1: raiseError()
-
     let used = total.QuadPart - free.QuadPart
     let percent = usage_percent( used.int, total.QuadPart.int, places=1 )
     DiskUsage( total:total.QuadPart.int, used:used.int,
                       free:free.QuadPart.int, percent:percent )
 
-
-proc virtual_memory*(): VirtualMemory =
+proc virtual_memory*(): VirtualMemory {.raises: [ValueError, OSError].} =
     ## System virtual memory
     var memInfo: MEMORYSTATUSEX
     memInfo.dwLength = sizeof(MEMORYSTATUSEX).DWORD
-
     if GlobalMemoryStatusEx( addr memInfo ) == 0:
         raiseError()
-
     let used = int(memInfo.ullTotalPhys - memInfo.ullAvailPhys)
     let percent =  usage_percent( used, memInfo.ullTotalPhys.int, places=1 )
     VirtualMemory( total: memInfo.ullTotalPhys.int,
@@ -423,21 +418,17 @@ proc virtual_memory*(): VirtualMemory =
                           used: used,
                           free: memInfo.ullAvailPhys.int )
 
-
-proc swap_memory*(): SwapMemory =
+proc swap_memory*(): SwapMemory {.raises: [ValueError, OSError].} =
     ## Swap system memory as a (total, used, free, sin, sout)
     var memInfo: MEMORYSTATUSEX
     memInfo.dwLength = sizeof(MEMORYSTATUSEX).DWORD
-
     if GlobalMemoryStatusEx( addr memInfo ) == 0:
         raiseError()
-
     let total = memInfo.ullTotalPageFile.int
     let free = memInfo.ullAvailPageFile.int
     let used = total - free
     let percent = usage_percent(used, total, places=1)
     SwapMemory(total:total, used:used, free:free, percent:percent, sin:0, sout:0)
-
 
 proc toUnixTime(ft: FILETIME): float =
     # HUGE thanks to:
@@ -463,21 +454,18 @@ proc uptime*(): int =
     ## Return the system uptime expressed in seconds, Integer type.
     int(GetTickCount64().float / 1000.float)
 
-proc per_cpu_times*(): seq[CPUTimes] =
+proc per_cpu_times*(): seq[CPUTimes] {.raises: [ValueError, OSError].} =
     ## Return system per-CPU times as a sequence of CPUTimes.
     let ncpus = GetActiveProcessorCount(ALL_PROCESSOR_GROUPS)
     if ncpus == 0:
         return result
-
     # allocates an array of _SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION structures, one per processor
     var sppi = newSeq[SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION](ncpus)
     let buffer_size = ULONG(ncpus * sizeof(SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION))
-
     # gets cpu time informations
     let status = NtQuerySystemInformation(systemProcessorPerformanceInformation, addr sppi[0], buffer_size, NULL)
     if status != 0:
         raiseError()
-
     # computes system global times summing each processor value
     for i in 0 ..< ncpus:
         let user = (HI_T * sppi[i].UserTime.HighPart.float) +
@@ -490,15 +478,13 @@ proc per_cpu_times*(): seq[CPUTimes] =
                         (LO_T * sppi[i].InterruptTime.LowPart.float)
         let dpc = (HI_T * sppi[i].DpcTime.HighPart.float) +
                   (LO_T * sppi[i].DpcTime.LowPart.float)
-
         # kernel time includes idle time on windows
         # we return only busy kernel time subtracting idle time from kernel time
         let system = kernel - idle
-
         result.add(CPUTimes(user:user, system:system, idle:idle, interrupt:interrupt, dpc:dpc))
 
 
-proc cpu_times*(): CPUTimes =
+proc cpu_times*(): CPUTimes {.raises: [ValueError, OSError].} =
     ## Retrieves system CPU timing information . On a multiprocessor system,
     ## the values returned are the
     ## sum of the designated times across all processors.
@@ -524,38 +510,29 @@ proc cpu_times*(): CPUTimes =
     let dpc_sum = sum(per_times.mapIt(it.dpc))
     CPUTimes(user:user, system:system, idle:idle, interrupt:interrupt_sum, dpc:dpc_sum)
 
-
 proc cpu_count_logical*(): int =
     cast[int](GetActiveProcessorCount(ALL_PROCESSOR_GROUPS))
 
-
-proc cpu_count_physical*(): int =
+proc cpu_count_physical*(): int {.raises: [ValueError, OSError].} =
     var length: DWORD = 0
     var rc = GetLogicalProcessorInformationEx(relationAll, NULL, addr length)
-
     var buffer = cast[PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX](alloc0(length))
     rc = GetLogicalProcessorInformationEx(relationAll, buffer, addr length)
-
     if rc == 0:
         dealloc(buffer)
         raiseError()
-
     var currentPtr = buffer
     var offset = 0
     var prevProcessorInfoSize = 0
     while offset < length:
         # Advance ptr by the size of the previous SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX struct.
         currentPtr = cast[PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX](cast[int](currentPtr) + prevProcessorInfoSize)
-
         if currentPtr.Relationship == relationProcessorCore:
             result += 1
-
         # When offset == length, we've reached the last processor info struct in the buffer.
         offset += currentPtr.Size
         prevProcessorInfoSize = currentPtr.Size
-
     dealloc(buffer)
-
 
 type WTS_CONNECTSTATE_CLASS {.pure.} = enum
     WTSActive,
@@ -569,26 +546,20 @@ type WTS_CONNECTSTATE_CLASS {.pure.} = enum
     WTSDown,
     WTSInit
 
-
 type WTS_SESSION_INFO = object
     sessionId: DWORD
     pWinStationName: LPWSTR
     state: WTS_CONNECTSTATE_CLASS
 
-
 type PWTS_SESSION_INFO = ptr WTS_SESSION_INFO
-
 
 type WTS_CLIENT_ADDRESS = object
     addressFamily: DWORD
     address: array[20, BYTE]
 
-
 type PWTS_CLIENT_ADDRESS = ptr WTS_CLIENT_ADDRESS
 
-
 const WTS_CURRENT_SERVER_HANDLE: HANDLE = 0
-
 
 type WTS_INFO_CLASS {.pure.} = enum
     WTSInitialProgram       = 0,
@@ -617,10 +588,8 @@ type WTS_INFO_CLASS {.pure.} = enum
     WTSClientInfo           = 23,
     WTSSessionInfo          = 24
 
-
 type WINSTATION_INFO_CLASS = enum
     WinStationInformation = 8
-
 
 type WINSTATION_INFO = object
     Reserved1: array[72, BYTE]
@@ -633,14 +602,12 @@ type WINSTATION_INFO = object
     Reserved3: array[1096, BYTE]
     CurrentTime: FILETIME
 
-
 proc WTSEnumerateSessionsW(
     hServer: HANDLE,
     reserved: DWORD,
     version: DWORD,
     ppSessionInfo: ptr PWTS_SESSION_INFO,
     pCount: PDWORD): WINBOOL {.winapi, stdcall, dynlib: "wtsapi32", importc.}
-
 
 proc WTSQuerySessionInformationW(
     hServer: HANDLE,
@@ -649,9 +616,7 @@ proc WTSQuerySessionInformationW(
     ppBuffer: ptr LPWSTR,
     pBytesReturned: ptr DWORD): WINBOOL {.winapi, stdcall, dynlib: "wtsapi32", importc.}
 
-
 proc WTSFreeMemory(pMemory: PVOID) {.winapi, stdcall, dynlib: "wtsapi32", importc.}
-
 
 proc WinStationQueryInformation(
     serverHandle: HANDLE,
@@ -666,26 +631,20 @@ proc getUserForSession(server: HANDLE, sessionId: DWORD): string =
     var bytes: DWORD = 0
     if WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, sessionId, WTSUserName, addr buffer_user, addr bytes) == 0:
         raiseError()
-
     if bytes <= 2:
         return ""
-
     result = $buffer_user
-
     WTSFreeMemory(buffer_user)
 
-proc getAddressForSession(server: HANDLE, sessionId: DWORD): string =
+proc getAddressForSession(server: HANDLE, sessionId: DWORD): string {.raises: [ValueError, OSError].} =
     var bytes: DWORD = 0
     var buffer_addr: LPWSTR = NULL
     if WTSQuerySessionInformationW(server, sessionId, WTS_INFO_CLASS.WTSClientAddress, addr buffer_addr, addr bytes) == 0:
         raiseError()
-
     let address = cast[PWTS_CLIENT_ADDRESS](buffer_addr).address
     let addressFamily = cast[PWTS_CLIENT_ADDRESS](buffer_addr).addressFamily
-
     if addressFamily == 0:
         result = &"{address[0]}.{address[1]}.{address[2]}.{address[3]}"
-
     WTSFreeMemory(buffer_addr)
 
 proc getLoginTimeForSession(server: HANDLE, sessionId: DWORD): float =
@@ -693,10 +652,9 @@ proc getLoginTimeForSession(server: HANDLE, sessionId: DWORD): float =
     var returnLen: ULONG
     if WinStationQueryInformation(server, sessionId, WinStationInformation, addr station_info, sizeof(station_info).ULONG, addr returnLen) == 0:
         return -1
-
     result = toUnixTime(station_info.ConnectTime)
 
-proc users*(): seq[User] =
+proc users*(): seq[User] {.raises: [ValueError, OSError].} =
     var count: DWORD = 0
     var sessions: PWTS_SESSION_INFO
     if WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, addr sessions, addr count) == 0:
@@ -740,29 +698,24 @@ proc process_exists*(processName: string): bool =
     var exists = false
     var entry: PROCESSENTRY32
     entry.dwSize = cast[DWORD](PROCESSENTRY32.sizeof)
-
     var snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
-
     if Process32First(snapshot, entry.addr):
         while Process32Next(snapshot, entry.addr):
             var name: string
             for c in entry.szExeFile:
                 if cast[char](c) == '\0':
                     break
-
                 name.add(cast[char](c))
-
             if name == processName:
                 exists = true
-
     CloseHandle(snapshot)
     return exists
 
-proc pid_exists*(pid: int): bool =
+proc pid_exists*(pid: int): bool {.raises: [ValueError, OSError].} =
     var p = openProc(pid, SYNCHRONIZE);
     if p.isSome:
-        var r = WaitForSingleObject(p, 0);
-        CloseHandle(p);
+        var r = WaitForSingleObject(p.get, 0);
+        CloseHandle(p.get);
         return r == WAIT_TIMEOUT
     else:
         raiseError()
