@@ -1,0 +1,6 @@
+pid_exists	psutil.html#pid_exists,int	psutil: pid_exists(pid: int): bool	
+cpu_count	psutil.html#cpu_count	psutil: cpu_count(logical = true): int	
+cpu_percent	psutil.html#cpu_percent,float	psutil: cpu_percent(interval = 0.0): float	
+per_cpu_percent	psutil.html#per_cpu_percent,float	psutil: per_cpu_percent(interval = 0.0): seq[float]	
+virtual_memory	psutil.html#virtual_memory	psutil: virtual_memory(): VirtualMemory	
+net_io_counters	psutil.html#net_io_counters	psutil: net_io_counters(): NetIO	
