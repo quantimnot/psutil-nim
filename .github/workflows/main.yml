@@ -19,12 +19,12 @@ jobs:
       with:
         fetch-depth: 1
     - id: install-nim
-      if: ${{ matrix.os != 'windows-latest' }}
+      if: runner.os != 'Windows'
       run: |
         curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
         sh choosenim.sh -y
-        echo "PATH=/home/runner/.nimble/bin:$PATH" >> $GITHUB_ENV
-        export PATH=/home/runner/.nimble/bin:$PATH
+        echo "PATH=/home/runner/.nimble/bin:${PATH}" >> "${GITHUB_ENV}"
+        export PATH="/home/runner/.nimble/bin:${PATH}"
         choosenim ${{ matrix.nim }}
     - name: 'Install dependencies (Windows)'
       if: runner.os == 'Windows'
@@ -32,6 +32,8 @@ jobs:
       run: |
         curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
         ./choosenim.exe --help
-        echo_run echo "${{ github.workspace }}/dist/mingw64/bin" >> "${GITHUB_PATH}"
+        echo "${{ github.workspace }}/dist/mingw64/bin" >> "${GITHUB_PATH}"
+        echo "${HOME}/.nimble/bin" >> "${GITHUB_PATH}"
+        choosenim ${{ matrix.nim }}
     - name: Test
       run: nimble test
