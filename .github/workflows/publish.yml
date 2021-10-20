@@ -10,22 +10,14 @@ on:
       - master
 
 jobs:
-  gh-pages:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+  gh-pages-linux:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           token: ${{secrets.GH_PAGES_TOKEN}}
-      - name: Deploy GitHub Docs ${{matrix.os}}
-        if: runner.os != 'Windows'
+      - name: Deploy GitHub Docs
         run: |
           curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
           sh choosenim.sh -y
@@ -35,13 +27,45 @@ jobs:
           git config --global user.name "${{github.actor}}"
           git config --global user.email "${{github.actor}}@users.noreply.github.com"
           git checkout gh-pages
-          rm -rf docs
-          mv htmldocs docs
+          rm -rf docs/{linux,posix}
+          mv htmldocs/{linux,posix} docs
           git add -A
-          git commit -m "gh pages"
+          git commit -m "linux and posix gh pages"
+          git pull
           git push
-      - name: Deploy GitHub Docs Windows
-        if: runner.os == 'Windows'
+
+  gh-pages-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{secrets.GH_PAGES_TOKEN}}
+      - name: Deploy GitHub Docs
+        run: |
+          curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+          sh choosenim.sh -y
+          export PATH="${HOME}/.nimble/bin:${PATH}"
+          choosenim stable
+          nimble docs
+          git config --global user.name "${{github.actor}}"
+          git config --global user.email "${{github.actor}}@users.noreply.github.com"
+          git checkout gh-pages
+          rm -rf docs/macos
+          mv htmldocs/macos docs
+          git add -A
+          git commit -m "macos gh pages"
+          git pull
+          git push
+
+  gh-pages-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{secrets.GH_PAGES_TOKEN}}
+      - name: Deploy GitHub Docs
         shell: bash
         run: |
           curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
@@ -52,8 +76,9 @@ jobs:
           git config --global user.name "${{github.actor}}"
           git config --global user.email "${{github.actor}}@users.noreply.github.com"
           git checkout gh-pages
-          rm -rf docs
-          mv htmldocs docs
+          rm -rf docs/windows
+          mv htmldocs/windows docs
           git add -A
-          git commit -m "gh pages"
+          git commit -m "windows gh pages"
+          git pull
           git push
