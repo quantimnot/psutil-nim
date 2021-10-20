@@ -307,3 +307,5 @@ export
 
 when defined(linux):
     export pid_user
+elif defined(windows):
+    export getnativearch
