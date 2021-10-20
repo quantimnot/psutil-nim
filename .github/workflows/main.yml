@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
-    - name: Test ${{maxtrix.os}}
+    - name: Test ${{matrix.os}}
       if: runner.os != 'Windows'
       run: |
         curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
@@ -33,7 +33,7 @@ jobs:
         export PATH="${HOME}/.nimble/bin:${PATH}"
         choosenim ${{matrix.nim}}
         nimble ${{matrix.testsuite}}
-    - name: Test ${{maxtrix.os}}
+    - name: Test ${{matrix.os}}
       if: runner.os == 'Windows'
       shell: bash
       run: |
