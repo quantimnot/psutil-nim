@@ -1,0 +1,27 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        branch: gh-pages
+        fetch-depth: 1
+        token: ${{secrets.GH_PAGES_TOKEN}}
+    - name: Deploy GitHub Docs
+      if: runner.os != 'Windows'
+      run: |
+        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+        sh choosenim.sh -y
+        export PATH="${HOME}/.nimble/bin:${PATH}"
+        choosenim ${{matrix.nim}}
+        nim docs --project --index:on --outdir:.
+        git add -A
+        git commit -m "gh pages"
+        git push

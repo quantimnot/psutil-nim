@@ -1,7 +1,7 @@
-name: build
+name: tests
 
 concurrency:
-  group: build
+  group: tests
   cancel-in-progress: true
 
 on:
@@ -40,16 +40,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
-    - name: Deploy GitHub Docs
-      if: runner.os != 'Windows'
-      run: |
-        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
-        sh choosenim.sh -y
-        echo "PATH=${HOME}/.nimble/bin:${PATH}" >> "${GITHUB_ENV}"
-        export PATH="${HOME}/.nimble/bin:${PATH}"
-        choosenim ${{matrix.nim}}
-        nimble ${{matrix.testsuite}}
-        nimble docs
     - name: Test ${{matrix.os}}
       if: runner.os != 'Windows'
       run: |
@@ -71,22 +61,3 @@ jobs:
         tasklist
         nimble --nim:"${HOME}/.nimble/bin/nim.exe" ${{matrix.testsuite}}
         nimble docs
-  gh-pages:
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        branch: gh-pages
-        fetch-depth: 1
-        token: ${{secrets.gh_pages_token}}
-    - name: Deploy GitHub Docs
-      if: runner.os != 'Windows'
-      run: |
-        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
-        sh choosenim.sh -y
-        export PATH="${HOME}/.nimble/bin:${PATH}"
-        choosenim ${{matrix.nim}}
-        nim docs --project --index:on --outdir:.
-        git commit -Am "gh pages"
-        git push
