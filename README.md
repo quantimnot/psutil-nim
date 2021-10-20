@@ -2,26 +2,22 @@
 
 > Port of Python [psutil](https://github.com/giampaolo/psutil) to Nim.
 
-![](https://img.shields.io/github/languages/top/juancarlospaco/psutil-nim?style=for-the-badge)
-![](https://img.shields.io/github/languages/count/juancarlospaco/psutil-nim?logoColor=green&style=for-the-badge)
-![](https://img.shields.io/github/stars/juancarlospaco/psutil-nim?style=for-the-badge "Star psutil-nim on GitHub!")
-![](https://img.shields.io/maintenance/yes/2020?style=for-the-badge)
-![](https://img.shields.io/github/languages/code-size/juancarlospaco/psutil-nim?style=for-the-badge)
-![](https://img.shields.io/github/issues-raw/juancarlospaco/psutil-nim?style=for-the-badge "Bugs")
-![](https://img.shields.io/github/issues-pr-raw/juancarlospaco/psutil-nim?style=for-the-badge "PRs")
-![](https://img.shields.io/github/commit-activity/y/juancarlospaco/psutil-nim?style=for-the-badge)
-![](https://img.shields.io/github/last-commit/juancarlospaco/psutil-nim?style=for-the-badge "Commits")
+[![](http://github-actions.40ants.com/quantimnot/psutil-nim/matrix.svg)](https://github.com/quantimnot/psutil-nim)
 
 **Pull requests with bug fixes and support for other platforms are welcome!**
 
 
 ## Table of Contents
 
-- [Background](#background)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contribute](#contribute)
-- [License](#license)
+- [Psutil-Nim](#psutil-nim)
+	- [Table of Contents](#table-of-contents)
+	- [Background](#background)
+	- [Install](#install)
+	- [Usage](#usage)
+	- [Troubleshooting](#troubleshooting)
+- [Stars](#stars)
+	- [Contribute](#contribute)
+			- [License](#license)
 
 ## Background
 

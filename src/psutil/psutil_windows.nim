@@ -61,7 +61,6 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
         raise newException(ValueError, "Registry (pid " & $registryPid & ") can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result == 0:
-        echo $dwProcessId
         raiseError()
 
 proc psutil_get_drive_type*( drive_type: UINT ): string =
