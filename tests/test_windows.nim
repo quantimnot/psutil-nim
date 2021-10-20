@@ -9,15 +9,15 @@ echo fmt"{getnativearch()}"
 echo_proc pids_with_names()
 for pid in pids():
   if not pid in forbiddenPids:
-    echo pid_path(pid)
+    echo try_pid_path(pid)
     echo fmt"{pid_arch(pid)}"
-    echo fmt"{pid_user(pid)}"
+    echo fmt"{try_pid_user(pid)}"
     echo fmt"{pid_domain(pid)}"
     echo fmt"{pid_domain_user(pid)}"
 
 var du = disk_usage("C:\\")
 echo du.total
-echo_proc pid_paths(pids())
+echo_proc try_pid_paths(pids())
 echo_proc pid_parent(pids()[0])
 echo_proc psutil_get_drive_type("C:\\")
 echo_proc process_exists("test_windows.exe")
