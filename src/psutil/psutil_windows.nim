@@ -149,7 +149,7 @@ proc pid_name*(processID: int): string =
     var szProcessName: wstring #array[MAX_PATH, TCHAR]
 
     #  Get a handle to the process.
-    var hProcess = openProc(processID, PROCESS_QUERY_LIMITED_INFORMATION or PROCESS_VM_READ)
+    var hProcess = openProc(processID, PROCESS_QUERY_LIMITED_INFORMATION)
 
     #  Get the process name.
     var hMod: HMODULE
