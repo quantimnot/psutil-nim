@@ -149,7 +149,7 @@ proc pid_name*(processID: int): string =
     var szProcessName: wstring #array[MAX_PATH, TCHAR]
 
     #  Get a handle to the process.
-    var hProcess = openProc(processID, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
+    var hProcess = openProc(processID, PROCESS_QUERY_LIMITED_INFORMATION or PROCESS_VM_READ)
 
     #  Get the process name.
     var hMod: HMODULE
@@ -218,7 +218,7 @@ proc try_pid_path*(pid: int): string =
     var filename: wstring
     var dwSize = MAX_PATH
 
-    processHandle = openProc(pid, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
+    processHandle = openProc(pid, PROCESS_QUERY_LIMITED_INFORMATION or PROCESS_VM_READ)
     defer: CloseHandle(processHandle)
 
     if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
