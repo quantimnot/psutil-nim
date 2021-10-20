@@ -18,8 +18,8 @@ const HI_T = 429.4967296
 const
     sysIdlePid* = 0
     sysPid* = 4
-    # registryPid* = 88 # TODO: I don't know if this always holds true.
-    forbiddenPids* = {sysIdlePid, sysPid} #, registryPid}
+    registryPid* = 88
+    forbiddenPids* = {sysIdlePid, sysPid, registryPid}
 
 # Make some constants for process architecture
 const PROCESS_ARCH_UNKNOWN* = 0 # architecture is unknown
@@ -57,8 +57,8 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
         raise newException(ValueError, "System Idle Process (pid " & $sysIdlePid & ") can not be opened.")
     elif dwProcessId == sysPid:
         raise newException(ValueError, "System (pid " & $sysPid & ") can not be opened.")
-    # elif dwProcessId == registryPid:
-    #     raise newException(ValueError, "Registry (pid " & $registryPid & ") can not be opened.")
+    elif dwProcessId == registryPid:
+        raise newException(ValueError, "Registry (pid " & $registryPid & ") can not be opened.")
     result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result == 0:
         echo $dwProcessId
@@ -151,8 +151,8 @@ proc pid_name*(processID: int): string =
         result = "System Idle Process"
     of sysPid:
         result = "System"
-    # of registryPid:
-    #     result = "Registry"
+    of registryPid:
+        result = "Registry"
     else:
         var szProcessName: wstring #array[MAX_PATH, TCHAR]
 
