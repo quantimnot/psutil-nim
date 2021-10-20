@@ -16,6 +16,8 @@ jobs:
         # - devel
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
     - id: install-nim
       if: ${{ matrix.os != 'windows-latest' }}
       run: |
@@ -24,12 +26,12 @@ jobs:
         echo "PATH=/home/runner/.nimble/bin:$PATH" >> $GITHUB_ENV
         export PATH=/home/runner/.nimble/bin:$PATH
         choosenim ${{ matrix.nim }}
-    - id: install-nim-windows
-      if: ${{ matrix.os == 'windows-latest' }}
+    - name: 'Install dependencies (Windows)'
+      if: runner.os == 'Windows'
+      shell: bash
       run: |
         curl.exe -LsSf https://github.com/dom96/choosenim/releases/download/v0.8.2/choosenim-0.8.2_windows_amd64.exe -o choosenim.exe
-        & "choosenim.exe"
+        ./choosenim.exe --help
+        echo_run echo "${{ github.workspace }}/dist/mingw64/bin" >> "${GITHUB_PATH}"
     - name: Test
-      run: |
-        nimble refresh
-        nimble test
+      run: nimble test
