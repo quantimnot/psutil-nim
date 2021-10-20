@@ -46,6 +46,13 @@ proc raiseError() =
     discard SetErrorMode( 0 )
     raise newException( OSError, "ERROR ($1): $2" % [$error_code, $error_message] )
 
+proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_INFORMATION, bInheritHandle: WINBOOL = FALSE): HANDLE =
+    ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
+    if dwProcessId == SYS_IDLE_PID:
+        raise newException(ValueError, "The System Idle Process (pid 0) can not be opened.")
+    result = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
+    if result == 0:
+        raiseError()
 
 proc psutil_get_drive_type*( drive_type: UINT ): string =
     case drive_type
@@ -139,23 +146,16 @@ proc pid_name*(processID: int): string =
 
     #  Get a handle to the process.
 
-    var hProcess = OpenProcess( cast[DWORD](PROCESS_QUERY_INFORMATION or PROCESS_VM_READ), FALSE, cast[DWORD](processID) )
+    var hProcess = openProc(processID, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
 
     #  Get the process name.
+    var hMod: HMODULE
+    var cbNeeded: DWORD
 
-    if hProcess.addr != nil:
+    if EnumProcessModules( hProcess, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
 
-        var hMod: HMODULE
-        var cbNeeded: DWORD
-
-        if EnumProcessModules( hProcess, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
-
-            GetModuleBaseName( hProcess, hMod, szProcessName,
-                               cast[DWORD](szProcessName.len) )
-
-    else:
-        CloseHandle(hProcess)
-        raiseError()
+        GetModuleBaseName( hProcess, hMod, szProcessName,
+                            cast[DWORD](szProcessName.len) )
 
     # Release the handle to the process.
 
@@ -183,15 +183,10 @@ proc pid_names*(pids: seq[int]): seq[string] =
     return ret
 
 proc pid_path*(pid: int): string =
-    if pid == SYS_IDLE_PID:
-      raise newException(ValueError, "The System Idle Process (pid 0) can not be opened.")
     var processHandle: HANDLE
     var filename: wstring
     var dwSize = MAX_PATH
-    processHandle = OpenProcess(cast[DWORD](PROCESS_QUERY_INFORMATION or PROCESS_VM_READ), FALSE,
-        cast[DWORD](pid.cint))
-    if processHandle == 0:
-        raiseError()
+    processHandle = openProc(pid, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
     defer: CloseHandle(processHandle)
     if processHandle == cast[HANDLE](1) or processHandle == cast[HANDLE](NULL):
         if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
@@ -220,30 +215,18 @@ proc try_pid_path*(pid: int): string =
     var filename: wstring
     var dwSize = MAX_PATH
 
-    processHandle = OpenProcess(cast[DWORD](PROCESS_QUERY_INFORMATION or PROCESS_VM_READ), FALSE,
-        cast[DWORD](pid))
+    processHandle = openProc(pid, PROCESS_QUERY_INFORMATION or PROCESS_VM_READ)
     defer: CloseHandle(processHandle)
 
-    if processHandle.addr != nil or processHandle == cast[HANDLE](1) or processHandle == cast[HANDLE](NULL):
-
-        if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
-
-            result = ""
-
-        else:
-
-            var ret: string
-            for c in filename:
-                if cast[char](c) == '\0':
-                    break
-
-                ret.add(cast[char](c))
-
-            return ret
-
-    else:
-
+    if QueryFullProcessImageNameW(processHandle, cast[DWORD](0), filename, cast[PDWORD](dwSize.addr)) == FALSE:
         result = ""
+    else:
+        var ret: string
+        for c in filename:
+            if cast[char](c) == '\0':
+                break
+            ret.add(cast[char](c))
+        return ret
 
 proc try_pid_paths*(pids: seq[int]): seq[string] =
 
@@ -300,13 +283,9 @@ proc pid_arch*(pid: int) : int =
     if nativeArch == PROCESS_ARCH_UNKNOWN:
         nativeArch = getnativearch()
 
-
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid)
+    hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
-    if hProcess == cast[HANDLE](-1):
-        hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, dwPid)
-        if hProcess == cast[HANDLE](-1):
-            raiseError()
+    hProcess = openProc(dwPid, PROCESS_QUERY_LIMITED_INFORMATION)
 
     if IsWow64Process(hProcess, bIsWow64.addr) == FALSE:
         return
@@ -331,10 +310,8 @@ proc pid_user*(pid: int): string =
     var wcDomain: wstring
 
 
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid)
+    hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
-    if hProcess == cast[DWORD](-1) or hProcess == cast[DWORD](NULL):
-        raiseError()
 
     if OpenProcessToken(hProcess, TOKEN_QUERY, cast[PHANDLE](hToken.addr)) == FALSE:
         raiseError()
@@ -371,7 +348,6 @@ proc pid_users*(pids: seq[int]): seq[string] =
 
 
 proc try_pid_user*(pid: int): string =
-
     ## Attempt to get the username associated with the given pid.
     var hProcess: HANDLE
     var hToken: HANDLE
@@ -384,11 +360,8 @@ proc try_pid_user*(pid: int): string =
     var wcUser: wstring
     var wcDomain: wstring
 
-
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid)
+    hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
-    if hProcess == cast[DWORD](-1) or hProcess == cast[DWORD](NULL):
-        return ""
 
     if OpenProcessToken(hProcess, TOKEN_QUERY, cast[PHANDLE](hToken.addr)) == FALSE:
         return ""
@@ -439,10 +412,8 @@ proc pid_domain*(pid: int): string =
     var wcDomain: wstring
 
 
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid)
+    hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
-    if hProcess == cast[DWORD](-1) or hProcess == cast[DWORD](NULL):
-        raiseError()
 
     if OpenProcessToken(hProcess, TOKEN_QUERY, cast[PHANDLE](hToken.addr)) == FALSE:
         raiseError()
@@ -487,10 +458,8 @@ proc pid_domain_user*(pid: int): (string, string) =
     var wcDomain: wstring
 
 
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwPid)
+    hProcess = openProc(dwPid)
     defer: CloseHandle(hProcess)
-    if hProcess == cast[DWORD](-1) or hProcess == cast[DWORD](NULL):
-        raiseError()
 
     if OpenProcessToken(hProcess, TOKEN_QUERY, cast[PHANDLE](hToken.addr)) == FALSE:
         raiseError()
@@ -975,7 +944,7 @@ proc process_exists*(processName: string): bool =
 
 proc pid_exists*(pid: int): bool =
 
-    var p = OpenProcess(SYNCHRONIZE, FALSE, cast[DWORD](pid));
+    var p = openProc(pid, SYNCHRONIZE);
     var r = WaitForSingleObject(p, 0);
     CloseHandle(p);
     return r == WAIT_TIMEOUT
