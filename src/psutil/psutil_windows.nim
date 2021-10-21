@@ -139,6 +139,7 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
             return some $szProcessName
         else:
             echo $pid
+            echo $hProcess.get
             echo $(cbNeeded / sizeof(hMod))
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
