@@ -52,6 +52,8 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     ## https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
     result = some OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
+    echo $dwProcessId
+    echo $(result.get)
     if result.get == 0:
         result = none HANDLE
 
@@ -138,8 +140,6 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
             echo $$szProcessName
             return some $szProcessName
         else:
-            echo $pid
-            echo $hProcess.get
             echo $(cbNeeded / sizeof(hMod))
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
