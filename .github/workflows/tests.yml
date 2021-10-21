@@ -18,23 +18,6 @@ jobs:
     steps:
       - run: echo "not contains '[skip ci]'"
 
-  tests-devel:
-    needs: noskipci
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
-    - name: Test Nim Devel
-      run: |
-        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
-        sh choosenim.sh -y
-        echo "PATH=${HOME}/.nimble/bin:${PATH}" >> "${GITHUB_ENV}"
-        export PATH="${HOME}/.nimble/bin:${PATH}"
-        choosenim devel
-        nimble test_all
-        nimble docs
-
   tests:
     needs: noskipci
     runs-on: ${{ matrix.os }}
@@ -75,4 +58,21 @@ jobs:
         echo y | nimble install
         tasklist
         nimble --nim:"${HOME}/.nimble/bin/nim.exe" test_${{matrix.test}}
+        nimble docs
+
+  tests-devel:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: Test Nim Devel
+      run: |
+        curl -LsSf https://nim-lang.org/choosenim/init.sh > choosenim.sh
+        sh choosenim.sh -y
+        echo "PATH=${HOME}/.nimble/bin:${PATH}" >> "${GITHUB_ENV}"
+        export PATH="${HOME}/.nimble/bin:${PATH}"
+        choosenim devel
+        nimble test_all
         nimble docs

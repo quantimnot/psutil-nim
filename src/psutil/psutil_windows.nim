@@ -51,12 +51,7 @@ proc raiseError() {.raises: [ValueError, OSError].} =
 proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INFORMATION, bInheritHandle: WINBOOL = FALSE): Option[HANDLE] =
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     ## https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
-    let r = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
-    result = some r
-    echo $r
-    echo $(cast[int](r.unsafeAddr))
-    echo $(cast[ptr int](r)[])
-    echo $(result.get)
+    result = some OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     if result.get == 0:
         result = none HANDLE
 
@@ -130,20 +125,14 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
     ## Return process name of pid.
     # https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodulesex
     var szProcessName = newWString(maxProcNameLen)
-    var hProcess = openProc(pid)
+    var hProcess = openProc(pid, PROCESS_QUERY_LIMITED_INFORMATION or PROCESS_VM_READ)
     if hProcess.isSome:
         defer: CloseHandle(hProcess.get)
         var hMod: HMODULE
         var cbNeeded: DWORD
         if EnumProcessModulesEx(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr, LIST_MODULES_DEFAULT) != 0:
-            let l = GetModuleBaseNameW(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen))
-            echo $l
-            szProcessName.setLen(l)
-            echo szProcessName.len
-            echo $$szProcessName
+            szProcessName.setLen(GetModuleBaseNameW(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen)))
             return some $szProcessName
-        else:
-            echo $(cbNeeded / sizeof(hMod))
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Return process name of pid.
