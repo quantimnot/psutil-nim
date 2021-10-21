@@ -129,7 +129,9 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
         var hMod: HMODULE
         var cbNeeded: DWORD
         if EnumProcessModules(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
-            szProcessName.setLen(GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen)))
+            let l = GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen))
+            echo $l
+            szProcessName.setLen(l)
         CloseHandle(hProcess.get)
         echo szProcessName.len
         echo $$szProcessName
