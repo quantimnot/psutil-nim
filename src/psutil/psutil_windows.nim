@@ -132,7 +132,7 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
             szProcessName.setLen(GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen)))
         CloseHandle(hProcess.get)
         echo szProcessName.len
-        echo $szProcessName
+        echo $$szProcessName
         return some $szProcessName
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
