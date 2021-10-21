@@ -138,7 +138,7 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
             echo $$szProcessName
             return some $szProcessName
         else:
-            echo $cbNeeded / sizeof(hMod)
+            echo $(cbNeeded / sizeof(hMod))
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Return process name of pid.
