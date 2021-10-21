@@ -54,8 +54,8 @@ proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INF
     let r = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
     result = some r
     echo $r
-    echo $(r.unsafeAddr)
-    echo $(r[])
+    echo $(cast[int](r.unsafeAddr))
+    echo $(cast[ptr int](r)[])
     echo $(result.get)
     if result.get == 0:
         result = none HANDLE
