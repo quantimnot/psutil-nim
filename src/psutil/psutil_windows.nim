@@ -51,8 +51,11 @@ proc raiseError() {.raises: [ValueError, OSError].} =
 proc openProc(dwProcessId: int, dwDesiredAccess: int = PROCESS_QUERY_LIMITED_INFORMATION, bInheritHandle: WINBOOL = FALSE): Option[HANDLE] =
     ## https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     ## https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
-    result = some OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
-    echo $dwProcessId
+    let r = OpenProcess(cast[DWORD](dwDesiredAccess), bInheritHandle, cast[DWORD](dwProcessId))
+    result = some r
+    echo $r
+    echo $(r.unsafeAddr)
+    echo $(r[])
     echo $(result.get)
     if result.get == 0:
         result = none HANDLE
