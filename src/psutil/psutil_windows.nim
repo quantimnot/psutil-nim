@@ -126,16 +126,16 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
     var szProcessName = newWString(maxProcNameLen)
     var hProcess = openProc(pid)
     if hProcess.isSome:
+        defer: CloseHandle(hProcess.get)
         var hMod: HMODULE
         var cbNeeded: DWORD
-        if EnumProcessModules(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr):
+        if EnumProcessModulesEx(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr, LIST_MODULES_DEFAULT):
             let l = GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen))
             echo $l
             szProcessName.setLen(l)
-        CloseHandle(hProcess.get)
-        echo szProcessName.len
-        echo $$szProcessName
-        return some $szProcessName
+            echo szProcessName.len
+            echo $$szProcessName
+            return some $szProcessName
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Return process name of pid.
