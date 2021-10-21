@@ -123,6 +123,7 @@ proc pids*(): seq[int] =
 
 proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
     ## Return process name of pid.
+    # https://docs.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodulesex
     var szProcessName = newWString(maxProcNameLen)
     var hProcess = openProc(pid)
     if hProcess.isSome:
@@ -130,12 +131,14 @@ proc try_pid_name*(pid: int): Option[string] {.raises: [].} =
         var hMod: HMODULE
         var cbNeeded: DWORD
         if EnumProcessModulesEx(hProcess.get, hMod.addr, cast[DWORD](sizeof(hMod)), cbNeeded.addr, LIST_MODULES_DEFAULT):
-            let l = GetModuleBaseName(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen))
+            let l = GetModuleBaseNameW(hProcess.get, hMod, szProcessName, cast[DWORD](maxProcNameLen))
             echo $l
             szProcessName.setLen(l)
             echo szProcessName.len
             echo $$szProcessName
             return some $szProcessName
+        else:
+            echo $cbNeeded / sizeof(hMod)
 
 proc pid_name*(pid: int): string {.raises: [ValueError, OSError].} =
     ## Return process name of pid.
